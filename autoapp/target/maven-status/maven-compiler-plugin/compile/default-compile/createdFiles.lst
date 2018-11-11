@@ -1,0 +1,13 @@
+com\waitrose\app\config\SQLiteDialect.class
+com\waitrose\app\dao\AppUserDAO.class
+com\waitrose\app\entity\AppUser.class
+com\waitrose\app\form\Params.class
+com\waitrose\app\dao\AppRoleDAO.class
+com\waitrose\app\utils\WebUtils.class
+com\waitrose\app\entity\UserRole.class
+com\waitrose\app\App.class
+com\waitrose\app\entity\AppRole.class
+com\waitrose\app\service\AppServiceImpl.class
+com\waitrose\app\config\DBConfiguration.class
+com\waitrose\app\controller\AppController.class
+com\waitrose\app\utils\EncrytedPasswordUtils.class

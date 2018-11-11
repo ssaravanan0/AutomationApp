@@ -1,0 +1,19 @@
+ 
+
+<link href="webjars/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+ 
+  <nav role="navigation" class="navbar navbar-default">
+	<div class="">
+		<a href="https://www.waitrose.com/" class="navbar-brand">Waitrose</a>
+	</div>
+	<div class="navbar-collapse">
+		<ul class="nav navbar-nav">
+			<li class="active"><a th:href="@{/}">Home</a></li>
+			<li><a th:href="@{/user}">User Page</a></li>
+			<li><a th:href="@{/admin}">Admin Page</a></li>
+		</ul>
+		<ul class="nav navbar-nav navbar-right">
+			<li><a th:if="${#request.userPrincipal != null}" th:href="@{/logout}">Logout</a></li>
+		</ul>
+	</div>
+</nav>

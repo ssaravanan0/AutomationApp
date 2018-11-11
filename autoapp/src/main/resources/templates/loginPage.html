@@ -1,0 +1,44 @@
+
+<th:block th:include="/header"></th:block>
+
+<div class="container">
+
+	<div class="row">
+
+		<div class="col-md-6 col-md-offset-3">
+			<h1>Login</h1>
+			<h3>Enter user name and password:</h3>
+			<form autocomplete="off" name='f'
+				th:action="@{/j_spring_security_check}" method='POST'>
+
+				<input type="text" id="username" name="username"
+					th:placeholder="Username" class="form-control" /> <br /> <input
+					type="password" th:placeholder="Password" id="password"
+					name="password" class="form-control" /> <br />
+				<!-- /login?error=true -->
+				<div align="center"
+					th:if="${#request.getParameter('error') == 'true'}">
+					<p style="font-size: 20; color: #FF1C19;">
+						Login Failed!!! <br> Reason : <span
+							th:if="${#session!= null and #session.getAttribute('SPRING_SECURITY_LAST_EXCEPTION') != null}"
+							th:utext="${#session.getAttribute('SPRING_SECURITY_LAST_EXCEPTION').message}">
+							Static summary </span>
+					</p>
+				</div>
+
+				<button class="btn btn-lg btn-primary btn-block" name="Submit"
+					value="Login" type="Submit" th:text="Login"></button>
+			</form>
+		</div>
+	</div>
+</div>
+
+<br>
+Username/pass:
+<ul>
+	<li>dbuser1/123</li>
+	<li>dbadmin1/123</li>
+</ul>
+<
+
+<th:block th:include="/footer"></th:block>
