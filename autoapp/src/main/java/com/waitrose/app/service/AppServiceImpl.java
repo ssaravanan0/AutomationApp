@@ -32,7 +32,7 @@ public class AppServiceImpl implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
     	System.out.println("Username >> " + userName);
-    	
+    	//todo call the service
         AppUser appUser = this.appUserDAO.findUserAccount(userName);
  
         if (appUser == null) {
