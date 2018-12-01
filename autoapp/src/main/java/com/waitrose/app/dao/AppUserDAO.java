@@ -1,5 +1,7 @@
 package com.waitrose.app.dao;
 
+import java.util.Date;
+
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
@@ -35,5 +37,31 @@ public class AppUserDAO {
             return null;
         }
     }
+    
+    public void updateLastUsed(String d, String userName) {
+    	
+    	try {
+            String sql = "Update App_User set last_used = '"+d+"' where User_Name = '"+userName+"'";
+            System.out.println("query is >>>"+ sql);
+            Query query = entityManager.createNativeQuery(sql);
+            System.out.println("update last used timestamp >>>"+ d);
+            query.executeUpdate();
+        } catch (NoResultException e) {
+        	e.printStackTrace();
+        }
+    	
+    }
+    
+    
+    
+    
+//    public AppUser save(AppUser appUser) {
+//        try {
+//            
+//            
+//        } catch (NoResultException e) {
+//            return null;
+//        }
+//    }
  
 }

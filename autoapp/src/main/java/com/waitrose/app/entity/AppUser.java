@@ -1,5 +1,7 @@
 package com.waitrose.app.entity;
 
+import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -28,6 +30,9 @@ public class AppUser {
  
     @Column(name = "Enabled", length = 1, nullable = false)
     private boolean enabled;
+
+    @Column(name = "last_used", nullable = false)
+    private String lastUsed;
  
     public Long getUserId() {
         return userId;
@@ -60,5 +65,15 @@ public class AppUser {
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
     }
+
+	public String getLastUsed() {
+		return lastUsed;
+	}
+
+
+	public void setLastUsed(String lastUsed) {
+		this.lastUsed = lastUsed;
+	}
+    
  
 }

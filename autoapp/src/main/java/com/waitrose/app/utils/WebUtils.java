@@ -1,19 +1,23 @@
 package com.waitrose.app.utils;
 
 import java.util.Collection;
- 
+import java.util.StringTokenizer;
+
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.context.request.RequestContextHolder;
+
+import com.waitrose.app.entity.ScriptMaster;
 /**
  *  
  * @author Saravanan
  *
  */
 public class WebUtils {
- 
+	
     public static String toString(User user) {
         StringBuilder sb = new StringBuilder();
- 
         sb.append("UserName:").append(user.getUsername());
  
         Collection<GrantedAuthority> authorities = user.getAuthorities();
@@ -21,8 +25,8 @@ public class WebUtils {
             sb.append(" (");
             boolean first = true;
             for (GrantedAuthority a : authorities) {
-                if (first) {
-                    sb.append(a.getAuthority());
+            	if (first) {
+                    sb.append(a.getAuthority()); 
                     first = false;
                 } else {
                     sb.append(", ").append(a.getAuthority());
@@ -32,5 +36,26 @@ public class WebUtils {
         }
         return sb.toString();
     }
-     
+    
+    public static String getRolePrefix(User user) {
+    	String rolePrefix ="";
+        Collection<GrantedAuthority> authorities = user.getAuthorities();
+        if (authorities != null && !authorities.isEmpty()) {
+             for (GrantedAuthority a : authorities) {
+             	rolePrefix = rolePrefix + a.getAuthority().charAt(a.getAuthority().indexOf('_')+1);  
+            }
+        }
+        System.out.println("rolePrefix >>>"+ rolePrefix);
+        return rolePrefix;
+    }
+    
+    public boolean isValidsession(String loginSession){
+		
+		if(!loginSession.equalsIgnoreCase(RequestContextHolder.currentRequestAttributes().getSessionId()))
+		{
+			return false;
+		}else {
+			return true;
+		}
+	}
 }

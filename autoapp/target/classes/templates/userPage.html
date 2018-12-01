@@ -1,54 +1,107 @@
-<!-- Include _menu.html -->
-<th:block th:include="/header"></th:block>
-<th:block th:include="/_menu"></th:block>
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+   <head>
+      <title th:utext="${title}"></title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="/js/postrequest.js"></script>
+     
+    <link rel="stylesheet" type="text/css" href="/css/app.css">
+</head>
+<body>
+ 
+  <nav role="navigation" class="navbar navbar-default" style ="margin-bottom: 0px">
+		<div class=""></div>
+		<div class="navbar-collapse">
+			<ul class="nav navbar-nav">
+				<a class="navbar-brand">Script Executor</a>
+			</ul>
+			<ul class="nav navbar-nav navbar-right">
+				<!-- <li><a th:href="@{/user}">Manage Scripts</a></li> -->
+				<a class="navbar-brand">Waitrose</a>
+			</ul>
+		</div>
+	</nav>
 
-<h3>Capture inputs and call shell script</h3>
-<h3>
-	Welcome : <span th:utext="${#request.userPrincipal.name}"></span>
-</h3>
-<div th:if="${userInfo != null}" th:utext="${userInfo}"></div>
-<b>This is protected page!</b>
 
-<br />
-<br />
+<div th:if="${scriptList != null}"> 
+ <div id = "scriptlistDiv" style="font-family:calibri;padding-top:12px;" class="table-responsive" th:object="${scriptList}" >          
+  <table class="table  table-striped">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Script Name</th>
+        <th>Description</th>
+        <th>Location</th>
+        <th>Prefix</th>  
+        <th>Run</th>
+      </tr>
+    </thead>
+    <tbody>
+     <tr th:id="${item.location} + ${item.scriptName}+.+${item.prefix}" th:each="item :${scriptList}">     
+        <td class="filterable-cell" th:text="${item.scriptId}"></td>
+        <td class="filterable-cell" th:text="${item.scriptName}"></td>
+        <td class="filterable-cell" th:text="${item.scriptDesc}"></td>
+        <td class="filterable-cell" th:text="${item.location}"></td>
+        <td class="filterable-cell" th:text="${item.prefix}"></td> 
+        <td><a  href="#" th:id="${item.scriptId}" class="run">run</a></td>
+    </tr>
+       
+    </tbody>
+  </table>
+  </div>
 
-<div class="container">
+
+<div id = "main" class="container">
 	<div class="row">
 		<div class="col-md-6 col-md-offset-3">
-			<form autocomplete="off" action="#" th:action="@{/user}"
-				th:object="${params}" method="post" class="form-horizontal"
+			<form id = "inputForm" autocomplete="off" 
+				th:object="${params}"  class="form-horizontal"
 				role="form">				
-				<div class="form-group">
-					<div class="col-sm-9">
-						<label th:if="${#fields.hasErrors('name')}" th:errors="*{name}"
-							class="validation-message"></label> <input type="text"
-							th:field="*{name}" placeholder="Name" class="form-control" />
-					</div>
-				</div>
-
-				<div class="form-group">
-					<div class="col-sm-9">
-						<label th:if="${#fields.hasErrors('lastName')}"
-							th:errors="*{lastName}" class="validation-message"></label> <input
-							type="text" th:field="*{lastName}" placeholder="Last Name"
-							class="form-control" />
-					</div>
-				</div>
-
-				<div class="form-group">
-					<div class="col-sm-9">
-						<button type="reset" class="btn btn-primary btn-block">Reset</button>
-						<button type="submit" class="btn btn-primary btn-block">Submit</button>
-					</div>
-				</div>
-
-				<h2>
-					<span class="text-success" th:utext="${successMessage}"></span>
-				</h2>
+				<div id = "postResultDiv1"  style="font-family:calibri;padding-top:12px;"></div></div>
 			</form>
 		</div>
 	</div>
 </div>
+<div id = "postResultDiv" class="container" style="display: none;font-family:calibri;padding-top:12px;
+margin-left:5vw;">
+</div>
+
+<div class="container">
+	<div class="row">
+		<div class="col-md-6 col-md-offset-3">
+			<span class="text-success" th:utext="${successMessage}"></span>
+		</div>
+	</div>
+</div>
+
+<div class="container">
+	<div class="row">
+		<div class="col-md-6 col-md-offset-3">
+			<span class="text-success" th:utext="${errorMessage}"></span>
+		</div>
+	</div>
+</div>
+</div> 
+ 
+    
+  <footer class="footer" style = "font-family:calibri;"> 
+       <div class="container">
+		<ul class="nav navbar-left">
+			<li><a th:if="${#request.userPrincipal != null}" th:href="@{/logout}">Logout</a></li>
+		</ul>
+		 
+		<ul class="nav navbar-nav navbar-right">
+			<li  ><a th:if="${#request.userPrincipal != null}">Welcome : <span th:utext="${#request.userPrincipal.name}"></span> </a></li>
+		 
+			<li  ><a th:if="${#request.userPrincipal != null}">Last used : <span th:utext="${lastUsed}"></span></a></li>
+		</ul>
+		</div>
+</footer>
 
 
-<th:block th:include="/footer"></th:block>
+
+</body>
+    
+</html>

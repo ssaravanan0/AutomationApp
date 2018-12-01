@@ -1,5 +1,6 @@
 package com.waitrose.app.service;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,10 +55,13 @@ public class AppServiceImpl implements UserDetailsService {
             }
         }
  
-        UserDetails userDetails = (UserDetails) new User(appUser.getUserName(), //
-                appUser.getEncrytedPassword(), grantList);
- 
+        UserDetails userDetails = (UserDetails) new User(appUser.getUserName(), appUser.getEncrytedPassword(), grantList);
+        
         return userDetails;
     }
- 
+    
+    public void updateLastUsed(String d, String userName) {   	
+    	appUserDAO.updateLastUsed(d, userName);
+    }
+    
 }

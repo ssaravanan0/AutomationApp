@@ -2,21 +2,196 @@
 <html xmlns:th="http://www.thymeleaf.org">
    <head>
       <title th:utext="${title}"></title>
-   </head>
-   <body>
-      <!-- Include _menu.html -->
-      <th:block th:include="/_menu"></th:block>
-       
-      <h2>Admin Page</h2>
-      <h3>Welcome :
-         <span th:utext="${#request.userPrincipal.name}"></span>
-      </h3>
-      <b>This is protected page!</b>  
-       
-      <br/><br/>
-       
-      <div th:if="${userInfo != null}" th:utext="${userInfo}"></div>
-       
-   </body>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="/js/admin.js"></script>
+    <link rel="stylesheet" type="text/css" href="/css/admin.css">
+    <link rel="stylesheet" type="text/css" href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto|Varela+Round|Open+Sans">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    
+</head>
+<body>
+ 
+ <nav role="navigation" class="navbar navbar-default" style ="margin-bottom: 0px">
+		 
+		<div class="navbar-collapse">
+			<ul class="nav navbar-nav">
+				<a class="navbar-brand">Script Executor</a>
+			</ul>
+ 		<ul class="nav navbar-nav navbar-right">
+				<a class="navbar-brand">Waitrose</a>
+			</ul>
+ 		</ul>
+ 		</div>
+	</nav>
+<div>
+
+<div class="container" style="font-family:calibri;padding-top:12px;
+margin-left:5vw;">
+		<ul class="navbar-right">
+			<a  href="#" class="manageScripts">Manage Scripts</a> |
+			<a  href="#" class="manageScriptInputs" >Manage Script Inputs</a> |
+			<a  href="#" class="manageUsers" >Manage Users</a> |
+			<a  href="#" class="manageGroup" >Manage Group</a>
+		</ul>
+</div>
+
+
+<div id='divMenuContainer' style="display: none;">
+			<header>
+				<ul class="main-nav">
+					<li><button class="btn">&#127968 HOME</button>/&nbsp;&nbsp;&nbsp;&nbsp;</li>
+					<li class="dropdown"><button class="btn">USER MENU</button>&nbsp;/&nbsp;&nbsp;&nbsp;&nbsp;
+						<ul class="drop-nav">
+							<li><button class="dropdownbtn">ADD TASK</button></li>
+							<li><button class="dropdownbtn">EDIT TASK</button></li>
+							<li><button class="dropdownbtn">RECENT HOTO</button></li>
+							<li>
+							<li><button class="dropdownbtn">DOWNLOAD REPORT</button></li>
+						</ul></li>
+					<li class="dropdown"><button class="btn">ADMIN</button>&nbsp;/&nbsp;&nbsp;
+						<ul class="drop-nav">
+							<li><button class="dropdownbtn">ADD USER</button></li>
+							<li><button class="dropdownbtn">ANALYTICS</button></li>
+							<li><button class="dropdownbtn">UNLOCK USER</button></li>
+						</ul></li>
+					<li><input type="text" id="myInput" class="w3-searchinput"
+						onkeyup="doSearch()" placeholder="SEARCH HERE"></li>
+					<li>/&nbsp;&nbsp;&nbsp;
+						<button class="btn" onclick="submitLogoff();">LOGOFF&nbsp;&nbsp;&nbsp;&nbsp;</button>
+					</li>
+					<li></li>
+				</ul>
+			</header>
+
+</div>
+
+
+	</div>
+<div th:if="${scriptList != null}"> 
+ <div id = "scriptlistDiv" style="font-family:calibri;padding-top:12px;display: none;" class="table-responsive" th:object="${scriptList}" > 
+   <div class="col-sm-4">
+			<button type="button" class="btn btn-info add-new">
+				<i class="fa fa-plus"></i> Add New
+			</button>
+		</div>
+<table class="table table-striped" id="manageScripts" >
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Script Name</th>
+        <th>Description</th>
+        <th>Location</th>
+        <th>Prefix</th>
+        <th>Access</th>  
+        <th id = "runcolumn">Run</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+     <tr th:id="${item.location} + ${item.scriptName}+.+${item.prefix}" th:each="item :${scriptList}">     
+        <td class="filterable-cell" th:text="${item.scriptId}"></td>
+        <td class="filterable-cell" th:text="${item.scriptName}"></td>
+        <td class="filterable-cell" th:text="${item.scriptDesc}"></td>
+        <td class="filterable-cell" th:text="${item.location}"></td>
+        <td class="filterable-cell" th:text="${item.prefix}"></td>
+        <td class="filterable-cell"  th:text="${item.access}"></td> 
+        <td class="filterable-cell" ><a href="#" th:id="${item.scriptId}" class="run">run</a></td>
+        <td class="filterable-cell"> <a href="#" th:id="${item.scriptId}" class="editscript"> Edit </a> <a href="#" th:id="${item.scriptId}"  class="removescript" >Remove</a> 
+        <a href="#" th:id="${item.scriptId}" class="updatescript"> Save </a><a href="#" th:id="${item.scriptId}" class="cancelupdatescript"> Cancel </a></td>
+    </tr> 
+    </tbody>
+  </table>
+  </div>
+  </div>
+  
+<div id = "main" class="container">
+	<div class="row">
+		<div class="col-md-6 col-md-offset-3">
+			<form id = "inputForm" autocomplete="off" 
+				th:object="${params}"  class="form-horizontal"
+				role="form">				
+				<div id = "postResultDiv1" style="font-family:calibri;padding-top:12px;"></div>
+			</form>
+		</div>
+	</div>
+</div>
+<div id = "postResultDiv" class="container" style="display: none;font-family:calibri;padding-top:12px;
+margin-left:5vw;">
+</div>
+
+<div id = "addRemoveScriptsDiv" class="container" style="display: none;">
+</div>
+
+<div id = "addRemoveInputsDiv" class="container" style="display: none;">
+ 
+<h4>Manage Input Scripts</h4>
+
+
+<div th:if="${scriptList != null}"> 
+  <div id = "selectedScriptInputDiv" class="table-responsive" th:object="${scriptList}" >
+	<ul>
+	<label for="sel1">Select the script name :</label>			 
+	 <select th:id="selectScriptName" class="form-control">
+		 <option>Please select...</option>
+		 <option th:each="item :${scriptList}" th:value="${item.scriptId}" th:text="${item.scriptName}">
+		</option>  
+	</select>
+	</ul>
+</div>	
+	<div id = "scriptInputResultDiv" class="table-responsive">   
+		   
+	</div>
+</div>
+ 
+
+<div id = "addRemoveUsersDiv" class="container" style="display: none;">
+this is addRemoveUsersDiv
+</div>
+
+<div id = "addRemoveGroupsDiv" class="container" style="display: none;">
+this is add Remove GroupsDiv
+</div>
+
+<div id = "loggedInUsersDiv" class="container" style="display: none;">
+</div>
+ 
+<div class="container">
+	<div class="row">
+		<div class="col-md-6 col-md-offset-3">
+			<span class="text-success" th:utext="${successMessage}"></span>
+		</div>
+	</div>
+</div>
+
+<div class="container">
+	<div class="row">
+		<div class="col-md-6 col-md-offset-3">
+			<span class="text-success" th:utext="${errorMessage}"></span>
+		</div>
+	</div>
+</div>
+</div> 
+
+    
+  <footer class="footer" style = "font-family:calibri;"> 
+        <div class="container">
+		<ul class="nav navbar-left">
+			<li><a th:if="${#request.userPrincipal != null}" th:href="@{/logout}">Logout</a></li>
+		</ul>
+		 
+		<ul class="nav navbar-nav navbar-right">
+			<li  ><a th:if="${#request.userPrincipal != null}">Welcome : <span th:utext="${#request.userPrincipal.name}"></span> </a></li>
+		 
+			<li  ><a th:if="${#request.userPrincipal != null}">Last used : <span th:utext="${lastUsed}"></span></a></li>
+		</ul>
+		</div> 
+</footer>
+
+
+
+</body>
     
 </html>
