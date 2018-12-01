@@ -1,0 +1,67 @@
+CREATE TABLE `AUDIT_SCRIPTS` (
+	`SCRIPT_ID`	BIGINT NOT NULL,
+	`SCRIPT_NAME`	VARCHAR ( 60 ) NOT NULL,
+	`LAST_EXECUTION_DATE`	DATETIME ( 60 ) NOT NULL,
+	`EXECUTION_IN_SECS`	VARCHAR ( 50 ),
+	`GROUP_ID`	VARCHAR ( 10 ),
+	`EXECUTED_BY`	VARCHAR ( 60 ) NOT NULL,
+	`CREATED_DATE`	DATETIME,
+	`LAST_MODIFIED_DATE`	DATETIME,
+	`CREATED_BY`	VARCHAR ( 50 ),
+	`MODIFIED_BY`	VARCHAR ( 50 )
+);
+
+CREATE TABLE `Persistent_Logins` (
+	`username`	varchar ( 64 ) NOT NULL,
+	`series`	varchar ( 64 ) NOT NULL,
+	`token`	varchar ( 64 ) NOT NULL,
+	`last_used`	Datetime NOT NULL,
+	PRIMARY KEY(`series`)
+);
+
+CREATE TABLE `SCRIPT_INPUTS` (
+	`SCRIPT_ID`	BIGINT NOT NULL,
+	`SCRIPT_NAME`	VARCHAR ( 60 ),
+	`INPUT_NAME`	VARCHAR ( 60 ),
+	`INPUT_TYPE`	VARCHAR ( 60 ),
+	`REQUIRED`	VARCHAR ( 10 ),
+	`CREATED_DATE`	DATETIME,
+	`LAST_MODIFIED_DATE`	DATETIME,
+	`CREATED_BY`	VARCHAR ( 50 ),
+	`MODIFIED_BY`	VARCHAR ( 50 )
+);
+
+CREATE TABLE `Script_Master` (
+	`SCRIPT_ID`	BIGINT NOT NULL,
+	`SCRIPT_NAME`	VARCHAR ( 60 ) NOT NULL,
+	`SCRIPT_DESC`	VARCHAR ( 60 ) NOT NULL,
+	`LOCATION`	VARCHAR ( 250 ) NOT NULL,
+	`PREFIX`	VARCHAR ( 250 ),
+	`ACCESS`	VARCHAR ( 2 ) NOT NULL,
+	`CREATED_DATE`	DATETIME,
+	`LAST_MODIFIED_DATE`	DATETIME,
+	`CREATED_BY`	VARCHAR ( 50 ),
+	`MODIFIED_BY`	VARCHAR ( 50 ),
+	PRIMARY KEY(`SCRIPT_ID`)
+);
+
+CREATE TABLE `app_role` (
+	`role_id`	bigint NOT NULL,
+	`role_name`	varchar NOT NULL,
+	PRIMARY KEY(`role_id`)
+);
+
+CREATE TABLE `app_user` (
+	`user_id`	bigint NOT NULL,
+	`enabled`	integer NOT NULL,
+	`encryted_password`	varchar NOT NULL,
+	`user_name`	varchar NOT NULL,
+	PRIMARY KEY(`user_id`)
+);
+
+CREATE TABLE `user_role` (
+	`id`	bigint NOT NULL,
+	`role_id`	bigint NOT NULL,
+	`user_id`	bigint NOT NULL,
+	PRIMARY KEY(`id`)
+);

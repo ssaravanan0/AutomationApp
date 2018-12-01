@@ -1,0 +1,90 @@
+ 
+
+<link href="webjars/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+ 
+  <nav role="navigation" class="navbar navbar-default">
+	<div class="">
+		
+	</div>
+	<div class="navbar-collapse">
+		<ul class="nav navbar-nav">
+			<a class="navbar-brand">Script Executor</a>
+		</ul>
+		<ul class="nav navbar-nav navbar-right">
+			<li class="active"><a th:href="@{/}">Home</a></li>
+			<li><a th:href="@{/user}">User Page</a></li>
+			<li><a th:href="@{/admin}">Admin Page</a></li>
+			<a class="navbar-brand">Waitrose</a>
+		</ul>
+	</div>
+</nav>
+
+<!-- 
+
+create table Script_Master
+(
+  SCRIPT_ID           BIGINT not null,
+  SCRIPT_NAME         VARCHAR(60) not null
+  SCRIPT_DESC         VARCHAR(60) not null,
+  LOCATION            VARCHAR(250) not null,
+  PREFIX              VARCHAR(250),
+  PRIMARY KEY (SCRIPT_ID) 
+) ;
+
+create table Script_Master
+(
+  SCRIPT_ID           BIGINT not null,
+  SCRIPT_NAME         VARCHAR(60) not null,
+  SCRIPT_DESC         VARCHAR(60) not null,
+  LOCATION            VARCHAR(250) not null,
+  PREFIX              VARCHAR(250),
+  GROUP               VARCHAR(3) not null,
+  CREATED_DATE        DATETIME      NULL,
+  LAST_MODIFIED_DATE   DATETIME      NULL,
+  CREATED_BY VARCHAR(50) NULL,
+  MODIFIED_BY VARCHAR(50) NULL,
+  PRIMARY KEY (SCRIPT_ID) 
+);
+
+
+
+insert into Script_Master (SCRIPT_ID, SCRIPT_NAME, SCRIPT_DESC, LOCATION, PREFIX)
+values (1, 'firstscript', 'firstscript', '/Users/saravanan/script/firstscript ', 'sh' );
+
+create table SCRIPT_ACCESS_MASTER
+(
+  SCRIPT_ID           BIGINT not null,
+  SCRIPT_NAME         VARCHAR(60),
+  USER_GROUP          VARCHAR(60) not null
+) ;
+
+create table SCRIPT_INPUTS
+(
+  SCRIPT_ID           BIGINT not null,
+  SCRIPT_NAME         VARCHAR(60),
+  INPUT_NAME          VARCHAR(60),
+  INPUT_TYPE          VARCHAR(60),
+  CREATED_DATE        DATETIME      NULL,
+  LAST_MODIFIED_DATE   DATETIME      NULL,
+  CREATED_BY VARCHAR(50) NULL,
+  MODIFIED_BY VARCHAR(50) NULL 
+) ;
+
+insert into SCRIPT_INPUTS (SCRIPT_ID, SCRIPT_NAME, INPUT_NAME, INPUT_TYPE)
+values (1, 'firstscript', 'name', 'string');
+insert into SCRIPT_INPUTS (SCRIPT_ID, SCRIPT_NAME, INPUT_NAME, INPUT_TYPE)
+values (1, 'firstscript', 'mobileno', 'number');
+
+CREATE TABLE `AUDIT_SCRIPTS` (
+	`SCRIPT_ID`	BIGINT NOT NULL,
+	`SCRIPT_NAME`	VARCHAR ( 60 ) NOT NULL,
+	`LAST_EXECUTION_DATE`	DATETIME ( 60 ) NOT NULL,
+	`EXECUTED_BY`	VARCHAR ( 60 ) NOT NULL,
+	`CREATED_DATE`	DATETIME,
+	`LAST_MODIFIED_DATE`	DATETIME,
+	`CREATED_BY`	VARCHAR ( 50 ),
+	`MODIFIED_BY`	VARCHAR ( 50 ),
+	`GROUP_ID`	VARCHAR ( 10 )
+);
+
+ -->

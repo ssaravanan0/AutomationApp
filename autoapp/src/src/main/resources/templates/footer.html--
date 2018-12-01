@@ -1,0 +1,30 @@
+<link href="webjars/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+ 
+ <div class="footer">
+		<ul class="nav navbar-nav">
+			<li><a th:if="${#request.userPrincipal != null}" th:href="@{/logout}">Logout</a></li>
+		</ul>
+		<ul class="nav navbar-nav navbar-right">
+			<li class="active"><a th:href="@{/}">Last used : </span></a></li>
+		</ul>
+		<ul class="nav navbar-nav navbar-right">
+			<li class="active"><a th:if="${#request.userPrincipal != null}" th:href="@{/}">Welcome : <span th:utext="${#request.userPrincipal.name}"></span></a></li>
+		</ul>
+		
+</div>
+
+<style>
+.footer {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    <!--background-color: grey;
+    color: white;-->
+    text-align: center;
+}
+</style>
+
+</body>
+    
+</html>
