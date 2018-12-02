@@ -39,7 +39,7 @@
     </root>
  
     <!-- LOG "com.app*" at DEBUG level -->
-    <logger name="com.app" level="debug" additivity="false">
+    <logger name="com.waitrose.app" level="debug" additivity="false">
         <appender-ref ref="RollingFile" />
         <appender-ref ref="Console" />
     </logger>

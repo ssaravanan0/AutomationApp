@@ -45,25 +45,18 @@ $( document ).ready(function() {
     	$(this).attr("disabled", "disabled");
 		var index = $("table tbody tr:last-child").index();
         var row = '<tr>' +
-            '<td></td>' +
-            '<td><input type="text" class="form-control" name="name" id="name"></td>' +
-            '<td><input type="text" class="form-control" name="desc" id="department"></td>' +
+            '<td id= "newScriptId"></td>' +
+            '<td><input type="text" class="form-control" name="sname" id="sname"></td>' +
+            '<td><input type="text" class="form-control" name="desc" id="desc"></td>' +
             '<td><input type="text" class="form-control" name="location" id="location"></td>' +
             '<td><input type="text" class="form-control" name="prefix" id="prefix"></td>' +
-            '<td> <select  class="form-control roleaccess">\r\n' + 
-    		'<option value=\"AU\">AU</option>\r\n' + 
-    		'<option value=\"U\">U</option>\r\n' + 
-    		'<option value=\"A\">A</option>\r\n' + 
-    		'</select> </td>'+
-    		 '<td class="filterable-cell" ><a href="#" th:id="${item.scriptId}" class="run" style="display: none;" >run</a></td>'+
-    	     '<td class="filterable-cell"> <a href="#" th:id="${item.scriptId}" class="editscript" style="display: none;"> Edit </a> <a href="#" th:id="${item.scriptId}"  class="removescript" style="display: none;" >Remove</a>'+ 
-    	      
-    		'<a href="#" class="addnewscript"> Save </a><a href="#" class="canceladdnewscript"> Cancel </a></td>' +
-        '</tr>';
-        //<input type="text" class="form-control" name="access" id="access">*/</td>' +
-    	//$("table").append(row);	
+            '<td><input type="text" class="form-control" name="access" id="access"></td>' +
+    		'<td class="filterable-cell" ><a href="#" class="runnewscript" style="display: none;" >run</a></td>'+
+    	    '<td class="filterable-cell"> <a href="#" class="editnewscript" style="display: none;"> Edit </a> <a href="#"  class="removenewscript" style="display: none;" >Remove</a>'+ 
+    		'<a href="#" class="addnewscript"> Save </a><a href="#" class="updatescript" style="display: none;"> Save </a><a href="#" class="cancelnewscript"> Cancel </a></td>' +
+        '</tr>';	
     	$(row).insertBefore('table > tbody > tr:first'); 
-		$("table tbody tr").eq(index + 1).find(".add, .edit").toggle();
+		$("table tbody tr").eq(index + 1).find(".add, .edit").toggle(); 
     });
     
     $(document).on("change", ".roleaccess", function(){
@@ -77,14 +70,13 @@ $( document ).ready(function() {
      $(this).parents("tr").remove();
 	 $(".add-new-input").removeAttr("disabled");
     });
-    
     //cancel to add new script
     $(document).on("click", ".canceladdnewscript", function(){
      //alert("cancel new script");
      $(this).parents("tr").remove();
 	 $(".add-new").removeAttr("disabled");
     });
-        
+    var newScriptNameWithPrefix;     
     //save button clicks..
 	$(document).on("click", ".addnewscript", function(){
 		//alert("save new script");
@@ -101,43 +93,48 @@ $( document ).ready(function() {
 		});
 	    
 		$(this).parents("tr").find(".error").first().focus();
-		
+		var scriptName;
+		var loc;
+		var prefix;
+	 
 		if(!empty){
-			input.each(function(){
-				//$(this).parent("td").html($(this).val());
+			input.each(function(i){
+				$(this).parent("td").html($(this).val());
 				newscriptcontent = newscriptcontent + saparator + $(this).val() ;
-			});	
-			newscriptcontent = newscriptcontent + saparator +  $(this).parents("tr").find('option:selected').val();
-			$(".roleaccess").attr('disabled','disabled');
-			//$(this).parent("td").append("AU");
-			$(this).parents("tr").find(".addnewscript, .canceladdnewscript").hide();
-			$(this).parents("tr").find(".editscript, .removescript").show();
-			$(this).parents("tr").find(".cancelupdatescript").show();
-			$(this).parents("tr").find(".run").show();
-			$(".add-new").removeAttr("disabled");
+	    			//alert($(this).text())
+	    			     if(i== 0){
+	    			    	 scriptName = $(this).val();
+	    			     }
+	    			     if(i== 2){
+	    			    	 loc=$(this).val(); 
+	    			     }
+	    			     if(i== 3){
+	    			    	 prefix=$(this).val();
+	    			     }  
+			});
 			
-			//alert(input2)
-			//alert(newscriptcontent);
+			newScriptNameWithPrefix=loc+scriptName+"."+prefix;
+			 //alert(newScriptNameWithPrefix)
+			$(this).parents("tr").find(".addnewscript, .cancelnewscript").hide();
+			$(this).parents("tr").find(".editnewscript, .removenewscript").show();
+			//$(this).parents("tr").find(".cancelnewescript").show();
+			$(this).parents("tr").find(".runnewscript").show();
+			$(".add-new").removeAttr("disabled");
+			var tmpScrId;
 			$.ajax({
 				type : "POST",
 				contentType : "application/json",
 				url : "/api/addnew",
 				data : newscriptcontent,
 				dataType : 'json',
-				//success: function(result){
-					//if(result.status == "Done"){
-						//var inputList = "";
-						
-							//alert(inputList);
-						    
 				success : function(result) {
 					if(result.status == "Done"){
 						//alert(result.data.scriptId);
-						location.reload();
-						input.each(function(){ 
-							$(this).parent("td").html($(this).val());
-							//updatedvalue = updatedvalue + saparator + $(this).val();
+						$(this).parents("tr").find(".updatescript").attr('id', result.data.scriptId);
+						input.each(function(){
+							$("#newScriptId").html(result.data.scriptId);
 						});
+						tmpScrId =  result.data.scriptId;
 						 
 	 				}else if(result.status == "Session expired"){
 						location.reload();
@@ -149,9 +146,7 @@ $( document ).ready(function() {
 					alert("Error!"+ e)
 				}
 			});
-		}
-		 //alert(newscriptcontent)
-	 		
+		}	
     });
 	
 	//SCRIPT INPUT Starts
@@ -195,9 +190,9 @@ $( document ).ready(function() {
     	
     	if(updatedvalue == currentValue)
 		{
-		 alert("both are same");
+		 //alert("both are same");
 		}else {
-		  alert("both are different .. update it in db");
+		  //alert("both are different .. update it in db");
 		  //
 		  $.ajax({
 				type : "POST",
@@ -218,56 +213,12 @@ $( document ).ready(function() {
 				error : function(e) {
 					alert("Error!"+ e)
 				}
-			});
-		  
-		  
-		  //
-		}
-    	
-    		/*	
-    		if(updatedvalue == currentValue)
-    			{
-    			//alert("both are same");
-    			}else {
-    				//alert("both are different .. update it in db");
-    				//alert(">>"+updatedvalue);
-    		    	$.ajax({
-    					type : "POST",
-    					contentType : "application/json",
-    					url : "/api/save",
-    					data : updatedvalue,
-    					dataType : 'json',
-    					
-    					success : function(result) {
-    						if(result.status == "Done"){
-    							//$("#main").slideUp("slow");
-    							//$("#main").hide(1000);
-    		 				}else{
-    		 				}
-    						console.log(result);
-    					},
-    					error : function(e) {
-    						alert("Error!"+ e)
-    					}
-    				});
-    		    	
-    				
-    			}
-    		updatedvalue = "";
-    		currentValue = "";
-    		$(this).parents("tr").find(".editscript, .removescript").toggle();
-    		//$(".updatescript").hide();
-    		$(this).parents("tr").find(".updatescript").hide();
-    		$(this).parents("tr").find(".cancelupdatescript").hide();
-    		$('.run').show();
-
-    		
-    	}*/		
+			})
+		}		
 	});
     $(document).on("click", ".editScriptInput", function(){ 
-    	alert("You have clicked the editScriptInput");
+    	//alert("You have clicked the editScriptInput");
     	event.preventDefault();
-
     	//disable run link
     	//$('.run').hide();
     	currentValue = saparator + $(this).attr('id');
@@ -275,47 +226,24 @@ $( document ).ready(function() {
     		function (i) {
     			//alert($(this).text())
     			     if(i!= 3){
-    			    	 alert("current test"+$(this).text())
+    			    	 //alert("current test"+$(this).text())
     			    	 currentValue = currentValue + saparator + $(this).text();
     			    	// if(i != 0)
     			          $(this).html('<input type="text" class="form-control" value="' + $(this).text() + '">');
     			         //currentValue = currentValue + ","+ $(this).text();
     				}
         });
-    	
-    	alert("before change :"+ currentValue)
-    	
+    	//alert("before change :"+ currentValue);	
     	$(this).parents("tr").find(".editScriptInput, .removeScriptInput").toggle();
-    	//$(this).parents("tr").find(".updatescript").show();
-    	//$(this).parents("tr").find(".cancelupdatescript").show();
+});
 
-	});
-
-   
-    
-    
-
-		//SCRIPT INPUT starts
-		/*
-		" class='editScriptInput'> Edit </a> <a href='#' id="+id+"  class='removescriptInput' >Remove</a>"+ 
-		"    <a href='#' id="+ id +" class='saveScriptInput'> Save </a><a href='#' id="+id+" class='cancelScriptInput'> Cancel </a></td>"+
-		"    <tr>\r\n" ;*/	
-	
-	//SCRIPT INPUT ends
-	
-	//remove link
-	$(".removescript").click(function(event) {
-		event.preventDefault();
-		var removeScriptId;
-		$(this).parents("tr").find('td').each(
-			function (i) {
-				    if(i == 0){
-				    	 removeScriptId = $(this).text();
-					}
-	         }); 
+//remove new
+$(document).on("click", ".removenewscript", function(){
+		event.preventDefault(); 
+		//alert($(this).parent().siblings(":first").text());
+		var removeScriptId = $(this).parent().siblings(":first").text();
 		 $(this).parents("tr").remove();
 		 $(".add-new").removeAttr("disabled");
-		 
 		 $.ajax({
 				type : "POST",
 				contentType : "application/json",
@@ -325,8 +253,8 @@ $( document ).ready(function() {
 				
 				success : function(result) {
 					if(result.status == "Done"){
-						//$("#main").slideUp("slow");
-						//$("#main").hide(1000);
+						// $("#main").slideUp("slow");
+						// $("#main").hide(1000);
 					}else if(result.status == "Session expired"){
 						location.reload();
 					}
@@ -335,18 +263,43 @@ $( document ).ready(function() {
 				error : function(e) {
 					alert("Error!"+ e)
 				}
-			});
-		 
-		 	
+			});	 	
+	});
+//remove link
+$(".removescript").click(function(event) {
+		event.preventDefault();
+		var removeScriptId = $(this).attr('id');	 
+		 $(this).parents("tr").remove();
+		 $(".add-new").removeAttr("disabled");
+		 $.ajax({
+				type : "POST",
+				contentType : "application/json",
+				url : "/api/delete",
+				data : removeScriptId,
+				dataType : 'json',
+				
+				success : function(result) {
+					if(result.status == "Done"){
+						// $("#main").slideUp("slow");
+						// $("#main").hide(1000);
+					}else if(result.status == "Session expired"){
+						location.reload();
+					}
+					console.log(result);
+				},
+				error : function(e) {
+					alert("Error!"+ e)
+				}
+			});	 	
 	});	
-	//admin page edit link
-	
-/*$(document).on("click", ".editscript", function(){ 
-	event.preventDefault();
-	
-	//disable run link
-	$('.run').hide();
 
+//admin page edit link	
+$(document).on("click", ".editnewscript", function(){ 
+	//event.preventDefault();
+	//disable run link
+	//alert($(this).parent().siblings(":first").text())
+	$('.runnewscript').hide();
+    var id = ""; 
 	$(this).parents("tr").find('td').each(
 		function (i) {
 			//alert($(this).text())
@@ -357,19 +310,37 @@ $( document ).ready(function() {
 			         //currentValue = currentValue + ","+ $(this).text();
 				}
     });
-	
-	//alert("before change :"+ currentValue)
-	
-	$(this).parents("tr").find(".editscript, .removescript").hide();
+	$(this).parents("tr").find(".editnewscript, .removenewscript").hide();
 	$(this).parents("tr").find(".updatescript").show();
-	$(this).parents("tr").find(".cancelupdatescript").show();
-});	*/
-$(".editscript").click(function(event) {
-	event.preventDefault();
+	$(this).parents("tr").find(".cancelnewscript").show();
+	//set script id
+	$(this).parents("tr").find(".updatescript").attr('id', $(this).parent().siblings(":first").text());
+	//$(this).parents("tr").find(".removenewscript").attr('id', $(this).parent().siblings(":first").text());
+	$(this).parents("tr").find(".addnewscript").attr('id', $(this).parent().siblings(":first").text());
+	$(this).parents("tr").find(".cancelnewscript").attr('id', $(this).parent().siblings(":first").text());
+	 
+});	
+
+$(document).on("click", ".cancelnewscript", function(){
+	var input = $(this).parents("tr").find('input[type="text"]');
+	input.each(function(){
+		$(this).parent("td").html($(this).val());
+		updatedvalue = updatedvalue + saparator + $(this).val() ;;
+	});
+	 $('.run').show();
+	$(this).parents("tr").find(".editnewscript, .removenewscript").show();
+	$(this).parents("tr").find(".updatescript").hide();
+	$(this).parents("tr").find(".cancelnewscript").hide();
+	$(this).parents("tr").find(".runnewscript").show();
 	
+});
+
+$(".editscript").click(function(event) {
+	//alert("edit");
+	event.preventDefault();
 	//disable run link
 	$('.run').hide();
-
+	currentValue = saparator + $(this).attr('id');
 	$(this).parents("tr").find('td').each(
 		function (i) {
 			//alert($(this).text())
@@ -380,9 +351,7 @@ $(".editscript").click(function(event) {
 			         //currentValue = currentValue + ","+ $(this).text();
 				}
     });
-	
 	//alert("before change :"+ currentValue)
-	
 	$(this).parents("tr").find(".editscript, .removescript").toggle();
 	$(this).parents("tr").find(".updatescript").show();
 	$(this).parents("tr").find(".cancelupdatescript").show();
@@ -395,7 +364,6 @@ $(document).on("click", ".cancelupdatescript", function(){
 		$(this).parent("td").html($(this).val());
 		updatedvalue = updatedvalue + saparator + $(this).val() ;;
 	});
-	
 	$(this).parents("tr").find(".editscript, .removescript").toggle();
 	//$(".updatescript").hide();
 	$(this).parents("tr").find(".updatescript").hide();
@@ -407,8 +375,8 @@ $(document).on("click", ".cancelupdatescript", function(){
 //Add row on add button click
 $(document).on("click", ".updatescript", function(){
 	var empty = false;
-	var selectedScriptId=$(this).closest('tr').children('td:first').text();
-	
+	var selectedScriptId=$(this).attr('id');
+	//currentValue = saparator + $(this).attr('id');
 	var input = $(this).parents("tr").find('input[type="text"]');
     input.each(function(){
 		if(!$(this).val()){
@@ -441,7 +409,6 @@ $(document).on("click", ".updatescript", function(){
 					url : "/api/save",
 					data : updatedvalue,
 					dataType : 'json',
-					
 					success : function(result) {
 						if(result.status == "Done"){
 							//$("#main").slideUp("slow");
@@ -455,8 +422,6 @@ $(document).on("click", ".updatescript", function(){
 						alert("Error!"+ e)
 					}
 				});
-		    	
-				
 			}
 		updatedvalue = "";
 		currentValue = "";
@@ -464,16 +429,20 @@ $(document).on("click", ".updatescript", function(){
 		//$(".updatescript").hide();
 		$(this).parents("tr").find(".updatescript").hide();
 		$(this).parents("tr").find(".cancelupdatescript").hide();
+		
+		
 		$('.run').show();
-
+		
+		$(this).parents("tr").find(".editnewscript, .removenewscript").show();
+		$(this).parents("tr").find(".cancelnewscript").hide();
 		
 	}		
 });
 $(".updatescript").hide();
 $(".cancelupdatescript").hide();
 
-	// SUBMIT FORM
-    $("#inputForm").submit(function(event) {
+// SUBMIT FORM
+$("#inputForm").submit(function(event) {
 		// Prevent the form from submitting via the browser.
     	event.preventDefault();
     	var inputs = " ";
@@ -489,9 +458,6 @@ $(".cancelupdatescript").hide();
 //$('#scriptlistDiv').hide();
 $(".manageScripts").click(function(event) {
 	$('#scriptlistDiv').show();
-	
-	
-	
 });
 
 $(".manageScripts").click(function(event) {
@@ -502,34 +468,34 @@ $(".manageScripts").click(function(event) {
 });
 
 $(".manageUsers").click(function(event) {
-	//$('#addRemoveInputsDiv').hide();
-	//$('#addRemoveUsersDiv').show();
-	//$('#scriptlistDiv').hide();
-	//$('#addRemoveGroupsDiv').hide();
+	$('#addRemoveInputsDiv').hide();
+	$('#addRemoveUsersDiv').show();
+	$('#scriptlistDiv').hide();
+	$('#addRemoveGroupsDiv').hide();
 });
 
 $(".manageScriptInputs").click(function(event) {
-	//$('#addRemoveUsersDiv').hide();
+	$('#addRemoveUsersDiv').hide();
 	//$('#addRemoveInputsDiv').show();
-	//$('#scriptlistDiv').hide();
-	//$('#addRemoveGroupsDiv').hide(); 
+	$('#scriptlistDiv').hide();
+	$('#addRemoveGroupsDiv').hide(); 
 });
 
 $(".manageGroup").click(function(event) {
-	//$('#addRemoveGroupsDiv').show();
-	//$('#addRemoveUsersDiv').hide();
-	//$('#addRemoveInputsDiv').hide();
-	//$('#scriptlistDiv').hide();	 
+	$('#addRemoveGroupsDiv').show();
+	$('#addRemoveUsersDiv').hide();
+	$('#addRemoveInputsDiv').hide();
+	$('#scriptlistDiv').hide();	 
 });
 
+//Manage Input drop down selected..
 $(document).on("change", "#selectScriptName", function(){
     var selectedScriptId = $(this).children("option:selected").val();
     //alert("You have selected the script name - " + selectedRole);
     var  noInputsInDb = false;
     $.ajax({
 		type : "GET",
-		url : "api/all?name="+ selectedScriptId ,
-		//data : JSON.stringify($(this).attr("id")),
+		url : "api/all?name="+ selectedScriptId , 
 		dataType : 'json',
 		success: function(result){
 				if(result.status == "Done"){
@@ -585,8 +551,7 @@ $(document).on("change", "#selectScriptName", function(){
 			}else if(result.status == "Session expired"){
 				location.reload();
 			}else{
-				$("#postResultDiv1").html("<strong>Error</strong>");
-//				
+				$("#postResultDiv1").html("<strong>Error</strong>");		
 				console.log("Fail: ", result);
 			}
 		},
@@ -597,6 +562,61 @@ $(document).on("change", "#selectScriptName", function(){
 	});	
 });
 
+$(document).on("click", ".runnewscript", function(){
+  	event.preventDefault();
+	//get id of selected script name 
+	trid = newScriptNameWithPrefix
+	//get script name to display on top of script result div
+	$(this).closest('tr').find('td').each(
+			    function (i) {
+			      if(i==1){
+			    	  scriptName = $(this).text();
+			      }
+			    });
+	$.ajax({
+		type : "GET",
+		url : "api/all?name="+$(this).parent().siblings(":first").text(),
+		dataType : 'json',
+		success: function(result){
+				if(result.status == "Done"){
+					var inputList = "";
+					$.each(result.data, function(i, scriptInputs){
+						inputList = inputList + addInputboxes(scriptInputs.inputName, scriptInputs.inputType, scriptInputs.required);
+					    console.log("Success: ", result);
+					});
+					//check if inputs retrived from db?
+					if(inputList.length == 0){	
+						$("#scriptlistDiv").hide(1000);
+						ajaxPost();
+					}else{
+					$("#scriptlistDiv").hide();
+					$("#postResultDiv1").html("<h4 style='font-family:calibri;'>"+ scriptName + " - Inputs</h4>"+inputList + "<div class=\"row\">\n" + 
+							"<div class='col-12 col-sm-6 col-md-6'>\n" + 
+							"<button type=\"reset\" class=\"btn btn-primary \">Reset</button>\n" + 
+							"<button type=\"submit\" class=\"btn btn-primary \">Submit</button>\n" + 
+							"</div>\n" + 
+							"</div>");
+					$("#postResultDiv1").prepend("<button type='button' id='close' class='close'><p style='font-size: 14px'>[ CLOSE ]</p></button>");+
+					$("#main").show();
+					$("#buttonDiv").show();
+				}
+			}else if(result.status == "Session expired"){
+				location.reload();
+			}else{
+				$("#postResultDiv1").html("<strong>Error</strong>");
+//				
+				console.log("Fail: ", result);
+			}
+		},
+		error : function(e) {
+			$("#getResultDiv").html("<strong>Error</strong>");
+			console.log("ERROR: ", e);
+		}
+	});	
+	$("#main").show();
+	$("#postResultDiv").hide();
+
+});
 $(".run").click(function(event) {
     	event.preventDefault();
     	//get id of selected script name 
@@ -678,21 +698,6 @@ $(".run").click(function(event) {
         "    <tr>\r\n" ;
 		}
     
-    function addNewInputs(id, param, type, required){
-    	return "<tr>\r\n" +
-    	"    <td class=\"filterable-cell\" >"+param+"</td>\r\n" + 
-		"    <td class=\"filterable-cell\" >"+type+"</td>\r\n" + 
-		"    <td class=\"filterable-cell\" >"+required+"</td>\r\n"+
-		"    <td class=\"filterable-cell\" > "+
-		"    <a href='#' id="+ id +" class='editScriptInput'> Edit </a> " +
-		"    <a href='#' id="+ id +" class='removeScriptInput'>Remove</a>"+ 
-        "    <a href='#' id="+ id +" class='saveScriptInput'>Save </a>" +
-        "    <a href='#' id="+ id +" class='cancelScriptInput'> Cancel </a>" +
-        "    </td>"+
-        "    <tr>\r\n" ;
-		}
-    
-    
     $(document).on('click','#close',function(){
 	    // code here
 		$("#scriptlistDiv").show();
@@ -701,20 +706,16 @@ $(".run").click(function(event) {
 		
 	});
     
-    function ajaxPost(){
+//Call server for shell script
+function ajaxPost(){
     	//alert(trid);
 		$("#main").hide(1000);
 		$("#postResultDiv").show();
 		$("#postResultDiv").html("<h4>"+ scriptName + "</h4>" +
 				"<div >Script is running please wait...</div>");
-		
-    	// PREPARE FORM DATA
-    	var formData = {
-    		trid
-    	}
     	
     	// call shell script
-    	$.ajax({
+		$.ajax({
 			type : "POST",
 			contentType : "application/json",
 			url : "/api/execute",
@@ -748,10 +749,5 @@ $(".run").click(function(event) {
 			}
 		});
     }
-    
-    function resetData(){
-    	
-    }
-    
- 
+     
 })

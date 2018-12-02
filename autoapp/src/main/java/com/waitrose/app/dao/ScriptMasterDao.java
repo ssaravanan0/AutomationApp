@@ -8,10 +8,13 @@ import javax.persistence.Id;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.waitrose.app.controller.RestWebController;
 import com.waitrose.app.entity.AppUser;
 import com.waitrose.app.entity.ScriptInputs;
 import com.waitrose.app.entity.ScriptMaster;
@@ -19,6 +22,8 @@ import com.waitrose.app.entity.ScriptMaster;
 @Repository
 @Transactional
 public class ScriptMasterDao {
+	
+	private static final Logger logger = LoggerFactory.getLogger(ScriptMasterDao.class);
 
 	public ScriptMasterDao() {
 		// TODO Auto-generated constructor stub
@@ -34,7 +39,7 @@ public class ScriptMasterDao {
             String sql = "From " + ScriptMaster.class.getName()
             + " e  Where e.access like '%"+ access+ "%'";
             Query query = entityManager.createQuery(sql);
-            System.out.println("ScriptMasterDao userRole >>>"+ access);
+           logger.debug("ScriptMasterDao userRole >>>"+ access);
             List<ScriptMaster> logEntries = query.getResultList(); 
             
             return logEntries;
@@ -48,7 +53,7 @@ public class ScriptMasterDao {
             String sql = "From " + ScriptMaster.class.getName()
             + " e  Where e.scriptId = "+ id;
             Query query = entityManager.createQuery(sql, ScriptMaster.class);
-            System.out.println("ScriptMasterDao getScriptsById >>>"+ id);
+           logger.debug("ScriptMasterDao getScriptsById >>>"+ id);
             
             return (ScriptMaster) query.getSingleResult();
             

@@ -3,6 +3,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -12,6 +14,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import com.waitrose.app.controller.RestWebController;
 import com.waitrose.app.dao.AppRoleDAO;
 import com.waitrose.app.dao.AppUserDAO;
 import com.waitrose.app.entity.AppUser;
@@ -23,6 +26,8 @@ import com.waitrose.app.entity.AppUser;
  */
 @Service
 public class AppServiceImpl implements UserDetailsService {
+	
+	private static final Logger logger = LoggerFactory.getLogger(AppServiceImpl.class);
  
     @Autowired
     private AppUserDAO appUserDAO;
@@ -37,11 +42,11 @@ public class AppServiceImpl implements UserDetailsService {
         AppUser appUser = this.appUserDAO.findUserAccount(userName);
  
         if (appUser == null) {
-            System.out.println("User not found! " + userName);
+           logger.debug("User not found! " + userName);
             throw new UsernameNotFoundException("User " + userName + " was not found in the database");
         }
  
-        System.out.println("Found User: " + appUser);
+       logger.debug("Found User: " + appUser);
  
         // [ROLE_USER, ROLE_ADMIN,..]
         List<String> roleNames = this.appRoleDAO.getRoleNames(appUser.getUserId());

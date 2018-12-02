@@ -90,9 +90,9 @@ margin-left:5vw;">
         <th>Actions</th>
       </tr>
     </thead>
-    <tbody>
+    <tbody> <!-- "${iterator.index + 1}" -->
      <tr th:id="${item.location} + ${item.scriptName}+.+${item.prefix}" th:each="item :${scriptList}">     
-        <td class="filterable-cell" th:text="${item.scriptId}"></td>
+        <td class="filterable-cell" th:text="${item.scriptId}" ></td>
         <td class="filterable-cell" th:text="${item.scriptName}"></td>
         <td class="filterable-cell" th:text="${item.scriptDesc}"></td>
         <td class="filterable-cell" th:text="${item.location}"></td>

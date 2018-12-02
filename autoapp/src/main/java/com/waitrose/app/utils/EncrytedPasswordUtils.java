@@ -1,11 +1,17 @@
 package com.waitrose.app.utils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
+import com.waitrose.app.controller.RestWebController;
 /**
  *  
  * @author Saravanan
  *
  */
 public class EncrytedPasswordUtils {
+	
+	private static final Logger logger = LoggerFactory.getLogger(EncrytedPasswordUtils.class);
  
     // Encryte Password with BCryptPasswordEncoder
     public static String encrytePassword(String password) {
@@ -17,7 +23,7 @@ public class EncrytedPasswordUtils {
         String password = "123";
         String encrytedPassword = encrytePassword(password);
  
-        System.out.println("Encryted Password: " + encrytedPassword);
+       logger.debug("Encryted Password: " + encrytedPassword);
     }
      
 }

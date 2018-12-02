@@ -2,7 +2,6 @@ package com.waitrose.app.controller;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,7 +27,6 @@ import com.waitrose.app.dao.ScriptMasterDao;
 import com.waitrose.app.dao.ScriptMasterRepository;
 import com.waitrose.app.entity.ScriptInputs;
 import com.waitrose.app.entity.ScriptMaster;
-import com.waitrose.app.form.Params;
 import com.waitrose.app.form.Response;
 
 @RestController
@@ -143,7 +141,7 @@ public class RestWebController {
 		logger.info("AddNewScript :" + updatedvalue);
         String[] values = updatedvalue.split("::@@::");
     	
-    	logger.debug("getEntity :>>>>>>>>>>>>>>>>>> 1:"+values[1] + ", 2:"+ values[2] +", 3:"+values[3] + ", 4:"+ values[4]);	
+    	logger.debug("getEntity :>>>>>>>>>>>>>>>>>> 1:"+values[0] + ", 2:"+ values[1] +", 3:"+values[2] + ", 4:"+ values[4]+ ", 5:"+ values[5]);	
     	
     	ScriptMaster scriptMaster = new ScriptMaster(); 
     	scriptMaster.setScriptName(values[1]);
@@ -163,7 +161,7 @@ public class RestWebController {
 		if(!isValidsession()) {
 			return new Response("Session expired", "Please login");
 		};
-		logger.info("update script inputs >>>" + updatedvalue);
+		logger.debug("update script inputs >>>" + updatedvalue);
         String[] values = updatedvalue.split("::@@::");
     	
         logger.debug("getEntity :>>>>>>>>>>>>>>>>>> 1:"+values[1] + ", 2:"+ values[2] +", 3:"+values[3] +" 4:"+values[4]);	
@@ -221,7 +219,7 @@ public class RestWebController {
 			logger.debug("Null.. something wrong in the session.");
 			return false;
 		} catch(Exception e) {
-			logger.debug("Something wrong in the session.");
+			logger.debug("Something wrong in the session."+e.getMessage());
 			return false;
 		} 
 	}

@@ -3,6 +3,8 @@ package com.waitrose.app.utils;
 import java.util.Collection;
 import java.util.StringTokenizer;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -15,6 +17,9 @@ import com.waitrose.app.entity.ScriptMaster;
  *
  */
 public class WebUtils {
+	
+	private static final Logger logger = LoggerFactory.getLogger(WebUtils.class);
+	 
 	
     public static String toString(User user) {
         StringBuilder sb = new StringBuilder();
@@ -45,7 +50,7 @@ public class WebUtils {
              	rolePrefix = rolePrefix + a.getAuthority().charAt(a.getAuthority().indexOf('_')+1);  
             }
         }
-        System.out.println("rolePrefix >>>"+ rolePrefix);
+       logger.debug("rolePrefix >>>"+ rolePrefix);
         return rolePrefix;
     }
     
