@@ -9,36 +9,73 @@ $( document ).ready(function() {
 	var currentValue ="";
 	var updatedvalue = "";
 	var saparator = "::@@::";
-	 
-	$("#manageScript").click(function(){
-	    //alert("clicked");
-	    event.preventDefault();
-	    
-	    $('#table td:nth-child(2)').hide();
-	    
-	    //alert($(this).closest('table').attr('id'));
-	    
-		//var column = "table ." + $(this).attr("Actions");
-	    //$(column).toggle();
+	
+	//hide script list by default    
+	//$('#scriptlistDiv').hide();
+	$(".manageScripts").click(function(event) {
+		$('#scriptlistDiv').show();
 	});
-	//add new script input
-	$(document).on("click", ".add-new-input", function(){
-		//alert("add new script");
-    	$(this).attr("disabled", "disabled");
-		var index = $("table table-inputs tbody tr:last-child").index();
-		//alert(index);
-		var row = '<tr>' +
-            '<td><input type="text" class="form-control" name="inputName" id="inputName"></td>' +
-            '<td><input type="text" class="form-control" name="inputType" id="inputType"></td>' +
-            '<td><input type="text" class="form-control" name="required" id="required"></td>'+
-    		'<td><a href="#" class="addNewScriptInput"> Save </a><a href="#" class="cancelAddNewScriptInput"> Cancel </a></td>' +
-            '</tr>';
-		$("table").append(row);	
-    	$(row).insertBefore('table table-inputs > tbody > tr:first'); 
-		$("table table-inputs tbody tr").eq(index + 1).find(".add, .edit").toggle();
-    });
+
+	$(".manageScripts").click(function(event) {
+		$('#addRemoveInputsDiv').hide();
+		$('#addRemoveUsersDiv').hide();
+		$('#scriptlistDiv').show();
+		$('#addRemoveGroupsDiv').hide();
+		$('#postResultDiv').hide();
+		
+	});
+
+	$(".manageUsers").click(function(event) {
+		$('#addRemoveInputsDiv').hide();
+		$('#addRemoveUsersDiv').show();
+		$('#scriptlistDiv').hide();
+		$('#addRemoveGroupsDiv').hide();
+		$('#postResultDiv').hide();
+		$('#postResultDiv1').hide();
+	});
+
+	$(".manageScriptInputs").click(function(event) {
+		$('#addRemoveUsersDiv').hide();
+		$('#addRemoveInputsDiv').show();
+		$('#scriptlistDiv').hide();
+		$('#addRemoveGroupsDiv').hide();
+		$('#postResultDiv').hide();
+		$('#postResultDiv1').hide();
+		/* When the user clicks on the button,
+		toggle between hiding and showing the dropdown content */
+		//$("#myDropdown").show();		 
+	});
+	
+	
+ 
+	
+	/* $("#myInput").keydown(function(event){
+		//alert("calling");
+		var input, filter, ul, li, a, i;
+	    input = document.getElementById("myInput");
+	    filter = input.value.toUpperCase();
+	    div = document.getElementById("myDropdown");
+	    a = div.getElementsByTagName("a");
+	    for (i = 0; i < a.length; i++) {
+	        if (a[i].innerHTML.toUpperCase().indexOf(filter) > -1) {
+	            a[i].style.display = "";
+	        } else {
+	            a[i].style.display = "none";
+	        }
+	    }
+	});*/
+	
+	 
+	$(".manageGroup").click(function(event) {
+		$('#addRemoveGroupsDiv').show();
+		$('#addRemoveUsersDiv').hide();
+		$('#addRemoveInputsDiv').hide();
+		$('#scriptlistDiv').hide();	 
+		$('#postResultDiv').hide();
+	});
+
 	//add new
-	var actions = $("table td:last-child").html();
+	//var actions = $("table td:last-child").html();
 	// Append table with add row form on add new button click
     $(".add-new").click(function(){
 		//alert("add new script");
@@ -64,12 +101,6 @@ $( document ).ready(function() {
         //alert("You have selected the role - " + selectedRole);
     });
     
-    //cancel to add new script input
-    $(document).on("click", ".cancelAddNewScriptInput", function(){
-     //alert("cancel new script");
-     $(this).parents("tr").remove();
-	 $(".add-new-input").removeAttr("disabled");
-    });
     //cancel to add new script
     $(document).on("click", ".canceladdnewscript", function(){
      //alert("cancel new script");
@@ -148,95 +179,7 @@ $( document ).ready(function() {
 			});
 		}	
     });
-	
-	//SCRIPT INPUT Starts
-	
-	$(document).on("click", ".removeScriptInput", function(){ 
-		console.log("You have clicked the removeScriptInput");
-			alert("You have clicked the removeScriptInput" );	
-		});
-	$(document).on("click", ".cancelScriptInput", function(){ 
-	    	alert("You have clicked the cancelScriptInput");
-	    	event.preventDefault();
-		});
-	// save link on edit scexisting script input row
-    $(document).on("click", ".saveScriptInput", function(){ 
-    	alert("You have clicked the saveScriptInput"+ $(this).attr('id'));
-    	event.preventDefault();
-    	var empty = false;
-    	var selectedScriptId=$(this).attr('id');
-    	//alert("sssfd>>>> "+selectedScriptId);
-    	var input = $(this).parents("tr").find('input[type="text"]');
-        input.each(function(){
-    		//alert($(this).val())
-        	if(!$(this).val()){
-    			$(this).addClass("error");
-    			empty = true;
-    		} else{
-                $(this).removeClass("error");
-            }
-    	});
-    	$(this).parents("tr").find(".error").first().focus();
-    	
-    	if(!empty){
-    		updatedvalue = saparator + selectedScriptId;
-    		input.each(function(){
-    			$(this).parent("td").html($(this).val());
-    			updatedvalue = updatedvalue + saparator + $(this).val() ;
-    		});	
-    		
-    		//alert("after changing:"+ updatedvalue);
-    	}
-    	
-    	if(updatedvalue == currentValue)
-		{
-		 //alert("both are same");
-		}else {
-		  //alert("both are different .. update it in db");
-		  //
-		  $.ajax({
-				type : "POST",
-				contentType : "application/json",
-				url : "/api/updateInputs",
-				data : updatedvalue,
-				dataType : 'json',
-				
-				success : function(result) {
-					if(result.status == "Done"){
-						 
-	 				}else if(result.status == "Session expired"){
-						location.reload();
-					}else{
-	 				}
-					console.log(result);
-				},
-				error : function(e) {
-					alert("Error!"+ e)
-				}
-			})
-		}		
-	});
-    $(document).on("click", ".editScriptInput", function(){ 
-    	//alert("You have clicked the editScriptInput");
-    	event.preventDefault();
-    	//disable run link
-    	//$('.run').hide();
-    	currentValue = saparator + $(this).attr('id');
-    	$(this).parents("tr").find('td').each(
-    		function (i) {
-    			//alert($(this).text())
-    			     if(i!= 3){
-    			    	 //alert("current test"+$(this).text())
-    			    	 currentValue = currentValue + saparator + $(this).text();
-    			    	// if(i != 0)
-    			          $(this).html('<input type="text" class="form-control" value="' + $(this).text() + '">');
-    			         //currentValue = currentValue + ","+ $(this).text();
-    				}
-        });
-    	//alert("before change :"+ currentValue);	
-    	$(this).parents("tr").find(".editScriptInput, .removeScriptInput").toggle();
-});
-
+		
 //remove new
 $(document).on("click", ".removenewscript", function(){
 		event.preventDefault(); 
@@ -293,8 +236,8 @@ $(".removescript").click(function(event) {
 			});	 	
 	});	
 
-//admin page edit link	
-$(document).on("click", ".editnewscript", function(){ 
+	//admin page edit link	
+	$(document).on("click", ".editnewscript", function(){ 
 	//event.preventDefault();
 	//disable run link
 	//alert($(this).parent().siblings(":first").text())
@@ -313,6 +256,7 @@ $(document).on("click", ".editnewscript", function(){
 	$(this).parents("tr").find(".editnewscript, .removenewscript").hide();
 	$(this).parents("tr").find(".updatescript").show();
 	$(this).parents("tr").find(".cancelnewscript").show();
+	$(this).parents("tr").find(".runnewscript").hide();
 	//set script id
 	$(this).parents("tr").find(".updatescript").attr('id', $(this).parent().siblings(":first").text());
 	//$(this).parents("tr").find(".removenewscript").attr('id', $(this).parent().siblings(":first").text());
@@ -322,17 +266,28 @@ $(document).on("click", ".editnewscript", function(){
 });	
 
 $(document).on("click", ".cancelnewscript", function(){
+	//alert("222");
 	var input = $(this).parents("tr").find('input[type="text"]');
-	input.each(function(){
+    input.each(function(){
+		if(!$(this).val()){
+			empty = true;
+		}  
+	}); 
+    if(empty){
+    	$(this).parents("tr").remove();
+    	$(".add-new").removeAttr("disabled");
+    }else{
+	 input.each(function(){
 		$(this).parent("td").html($(this).val());
 		updatedvalue = updatedvalue + saparator + $(this).val() ;;
 	});
 	 $('.run').show();
+	 $('.runnewscript').show();
 	$(this).parents("tr").find(".editnewscript, .removenewscript").show();
 	$(this).parents("tr").find(".updatescript").hide();
 	$(this).parents("tr").find(".cancelnewscript").hide();
 	$(this).parents("tr").find(".runnewscript").show();
-	
+    }
 });
 
 $(".editscript").click(function(event) {
@@ -435,6 +390,7 @@ $(document).on("click", ".updatescript", function(){
 		
 		$(this).parents("tr").find(".editnewscript, .removenewscript").show();
 		$(this).parents("tr").find(".cancelnewscript").hide();
+		$(this).parents("tr").find(".runnewscript").show();
 		
 	}		
 });
@@ -454,113 +410,6 @@ $("#inputForm").submit(function(event) {
 		$("#scriptlistDiv").hide(1000);
 		ajaxPost();
 	});
-//hide script list by default    
-//$('#scriptlistDiv').hide();
-$(".manageScripts").click(function(event) {
-	$('#scriptlistDiv').show();
-});
-
-$(".manageScripts").click(function(event) {
-	$('#addRemoveInputsDiv').hide();
-	$('#addRemoveUsersDiv').hide();
-	$('#scriptlistDiv').show();
-	$('#addRemoveGroupsDiv').hide();
-});
-
-$(".manageUsers").click(function(event) {
-	$('#addRemoveInputsDiv').hide();
-	$('#addRemoveUsersDiv').show();
-	$('#scriptlistDiv').hide();
-	$('#addRemoveGroupsDiv').hide();
-});
-
-$(".manageScriptInputs").click(function(event) {
-	$('#addRemoveUsersDiv').hide();
-	//$('#addRemoveInputsDiv').show();
-	$('#scriptlistDiv').hide();
-	$('#addRemoveGroupsDiv').hide(); 
-});
-
-$(".manageGroup").click(function(event) {
-	$('#addRemoveGroupsDiv').show();
-	$('#addRemoveUsersDiv').hide();
-	$('#addRemoveInputsDiv').hide();
-	$('#scriptlistDiv').hide();	 
-});
-
-//Manage Input drop down selected..
-$(document).on("change", "#selectScriptName", function(){
-    var selectedScriptId = $(this).children("option:selected").val();
-    //alert("You have selected the script name - " + selectedRole);
-    var  noInputsInDb = false;
-    $.ajax({
-		type : "GET",
-		url : "api/all?name="+ selectedScriptId , 
-		dataType : 'json',
-		success: function(result){
-				if(result.status == "Done"){
-					var inputList = "";
-					$.each(result.data, function(i, scriptInputs){
-					    inputList = inputList + showInputs(scriptInputs.scriptId, scriptInputs.inputName, scriptInputs.inputType, scriptInputs.required);
-						//alert(inputList);
-						console.log("Success: ", result);
-					});
-					//check if inputs retrived from db?
-					if(inputList.length == 0){	
-						noInputsInDb = true;
-						//$("#scriptInputResultDiv").hide();
-						$("#scriptInputResultDiv").html("<div class=\"col-sm-4\">\r\n" + 
-					    		"			<button type=\"button\" class=\"btn btn-info add-new-input\">\r\n" + 
-					    		"				<i class=\"fa fa-plus\"></i> Add New\r\n" + 
-					    		"			</button>\r\n" + 
-					    		"    	</div>" +
-					    		"<table class=\"table table-inputs table-striped\" style= \" width:100% \" id=\"manageScriptInputsTbl\" >\r\n" + 
-					    		"    <thead>\r\n" + 
-					    		"      <tr>\r\n" + 
-					    		"        <th>inputName</th>\r\n" + 
-					    		"        <th>inputType</th>\r\n" + 
-					    		"        <th>required</th>\r\n" + 
-					    		"        <th>Action</th>\r\n" + 
-					    		"      </tr>\r\n" + 
-					    		"    </thead>\r\n" + 
-					    		"    <tbody style=\"width:100%;\">\r\n" + 
-					    		"    </tbody>\r\n" + 
-					    		"  </table>\r\n" );
-					}else{
-						$("#scriptInputResultDiv").html("<div class=\"col-sm-4\">\r\n" + 
-					    "			<button type=\"button\" class=\"btn btn-info add-new-input\">\r\n" + 
-					    "				<i class=\"fa fa-plus\"></i> Add New\r\n" + 
-					    "			</button>\r\n" + 
-					    "    	</div>" +
-					    "<table class=\"table table-inputs table-striped\" style= \" width:100% \" id=\"manageScriptInputsTbl\" >\r\n" + 
-			    		"    <thead>\r\n" + 
-			    		"      <tr>\r\n" + 
-			    		"        <th>inputName</th>\r\n" + 
-			    		"        <th>inputType</th>\r\n" + 
-			    		"        <th>required</th>\r\n" + 
-			    		"        <th>Action</th>\r\n" + 
-			    		"      </tr>\r\n" + 
-			    		"    </thead>\r\n" + 
-			    		"    <tbody style=\"width:100%;\">\r\n" + 
-			    		
-			    		inputList + 
-			    		 
-			    		"    </tbody>\r\n" + 
-			    		"  </table>\r\n" );
-				}
-			}else if(result.status == "Session expired"){
-				location.reload();
-			}else{
-				$("#postResultDiv1").html("<strong>Error</strong>");		
-				console.log("Fail: ", result);
-			}
-		},
-		error : function(e) {
-			$("#getResultDiv").html("<strong>Error</strong>");
-			console.log("ERROR: ", e);
-		}
-	});	
-});
 
 $(document).on("click", ".runnewscript", function(){
   	event.preventDefault();
@@ -617,6 +466,7 @@ $(document).on("click", ".runnewscript", function(){
 	$("#postResultDiv").hide();
 
 });
+
 $(".run").click(function(event) {
     	event.preventDefault();
     	//get id of selected script name 
@@ -631,7 +481,7 @@ $(".run").click(function(event) {
     	//alert(trid);
     	$.ajax({
 			type : "GET",
-			url : "api/all?name="+ $(this).attr("id"),
+			url : "api/findinputs?name="+ $(this).attr("id"),
 			//data : JSON.stringify($(this).attr("id")),
 			dataType : 'json',
 			success: function(result){
@@ -646,6 +496,7 @@ $(".run").click(function(event) {
 							$("#scriptlistDiv").hide(1000);
 							ajaxPost();
 						}else{
+							$("#postResultDiv1").show();
 						$("#scriptlistDiv").hide();
 						$("#postResultDiv1").html("<h4 style='font-family:calibri;'>"+ scriptName + " - Inputs</h4>"+inputList + "<div class=\"row\">\n" + 
 								"<div class='col-12 col-sm-6 col-md-6'>\n" + 
@@ -684,19 +535,7 @@ $(".run").click(function(event) {
     				"</div>";
     }
     
-    function showInputs(id, param, type, required){
-    	return "<tr>\r\n" +
-		"    <td class=\"filterable-cell\" >"+param+"</td>\r\n" + 
-		"    <td class=\"filterable-cell\" >"+type+"</td>\r\n" + 
-		"    <td class=\"filterable-cell\" >"+required+"</td>\r\n"+
-		"    <td class=\"filterable-cell\" > "+
-		"    <a href='#' id="+ id +" class='editScriptInput'> Edit </a> " +
-		"    <a href='#' id="+ id +" class='removeScriptInput'>Remove</a>"+ 
-        "    <a href='#' id="+ id +" class='saveScriptInput'>Save </a>" +
-        "    <a href='#' id="+ id +" class='cancelScriptInput'> Cancel </a>" +
-        "    </td>"+
-        "    <tr>\r\n" ;
-		}
+    
     
     $(document).on('click','#close',function(){
 	    // code here

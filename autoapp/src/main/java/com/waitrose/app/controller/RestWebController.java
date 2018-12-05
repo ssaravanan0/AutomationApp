@@ -46,13 +46,18 @@ public class RestWebController {
 
 	//List<Params> cust = new ArrayList<Params>();
 
-	@GetMapping(value = "/all")
+	@GetMapping(value = "/findinputs")
 	public Response getScriptInputs(@RequestParam(name = "name", required = true) long name) {
 		if(!isValidsession()) {
 			return new Response("Session expired", "Please login");
 		};
+		logger.debug("getScriptInputs"+ name);
 		
-		return new Response("Done", scriptMasterDao.getScriptInputs(name));
+		List<ScriptInputs> inputs = scriptMasterDao.getScriptInputs(name);
+		
+		logger.debug("size of inputs : "+ inputs.size());
+		
+		return new Response("Done", inputs);
 	}
 
 	// @RequestMapping(value = "/user", method = RequestMethod.POST)
@@ -156,6 +161,29 @@ public class RestWebController {
 		return response;
 	}
 	
+	@PostMapping(value = "/addnewinput")
+	public Response AddNewScriptInput(@Valid @RequestBody String inputs) {
+		if(!isValidsession()) {
+			return new Response("Session expired", "Please login");
+		};
+		logger.info("AddNewScript :" + inputs);
+        String[] values = inputs.split("::@@::");
+    	
+    	logger.debug("getEntity :>>>>>>>>>>>>>>>>>> 1:"+values[1] + ", 2:"+ values[2] +", 3:"+values[3]+", 4:"+values[4]);	
+    	
+    	ScriptInputs input = new ScriptInputs(); 
+    	input.setScriptId(new Long(values[1]));
+    	input.setScriptName(values[2]);
+    	input.setInputName(values[3]);
+    	input.setInputType(values[4]);
+    	input.setRequired(values[5]);
+    	logger.debug("query executed and added script input :>>>>>>>>>>>>>>>>>> "+ input.getScriptName());
+		scriptInputsRepository.save(input);	
+		
+		Response response = new Response("Done", input);
+		return response;
+	}
+	
 	@PostMapping(value = "/updateInputs")
 	public Response UpdateScriptInputs(@Valid @RequestBody String updatedvalue) {
 		if(!isValidsession()) {
@@ -164,24 +192,58 @@ public class RestWebController {
 		logger.debug("update script inputs >>>" + updatedvalue);
         String[] values = updatedvalue.split("::@@::");
     	
-        logger.debug("getEntity :>>>>>>>>>>>>>>>>>> 1:"+values[1] + ", 2:"+ values[2] +", 3:"+values[3] +" 4:"+values[4]);	
+        logger.debug("getEntity :>>>>>>>>>>>>>>>>>> 1:"+values[1] + ", 2:"+ values[2] +", 3:"+values[3] +" 4:"+values[4]+" 5:"+values[5]);	
     	
-    	ScriptInputs scriptInputs = scriptMasterDao.getScriptInputsByName(new Long(values[1]),  values[2]); 
+    	//ScriptInputs scriptInputs = scriptMasterDao.getScriptInputsByName(new Long(values[1]),  values[2]); 
     	
-    	scriptInputsRepository.deleteByScriptNameAndScriptIdAndInputName( scriptInputs.getScriptName(), scriptInputs.getScriptId(),scriptInputs.getInputName());
+    	//logger.debug("get current row from db "+ scriptInputs.getInputName() + scriptInputs.getScriptId());
     	
-    	scriptInputs.setInputName(values[2]);
-    	scriptInputs.setInputType(values[3]);
-    	scriptInputs.setRequired(values[4]);
-    	logger.debug("query executed and script name is :>>>>>>>>>>>>>>>>>> "+ scriptInputs.getScriptId());
+    	//scriptInputsRepository.deleteByScriptNameAndScriptIdAndInputName( scriptInputs.getScriptName(), scriptInputs.getScriptId(),scriptInputs.getInputName());
+    	
+    	//logger.debug("get current row from db "+ scriptInputs.getInputName() + scriptInputs.getScriptId());
+    	
+    	
+    	//scriptInputs.setInputName(values[2]);
+    	//scriptInputs.setInputType(values[3]);
+    	//scriptInputs.setRequired(values[4]);
+    	//logger.debug("query executed and script name is :>>>>>>>>>>>>>>>>>> "+ scriptInputs.getScriptId());
      	
     	//scriptInputsRepository.save(scriptInputs);	
     	//scriptMasterDao.persistInput(scriptInputs);
     	//scriptInputsRepository.updateUserSetStatusForName(String inputType, String scriptName, String inputName, long scriptId);
     	//scriptInputsRepository.updateUserSetStatusForName(values[3], values[4], values[2], scriptInputs.getScriptId(), scriptInputs.getScriptName());
-    	scriptInputsRepository.save(scriptInputs);
-		Response response = new Response("Done", scriptInputs);
+    	//scriptInputsRepository.save(scriptInputs);
+        
+        //1- sname
+        //2 - id  inputType, required, inputName, scriptId, scriptName
+        scriptInputsRepository.updateScriptInputsSetInputTypeAndInputName(values[4], values[5], values[3], new Long(values[2]), values[1]);
+        
+		Response response = new Response("Done", null);
 		return response;
+	}
+	
+	@PostMapping(value = "/deleteinput")
+	public Response DeleteInput(@Valid @RequestBody String input) {
+		if(!isValidsession()) {
+			return new Response("Session expired", "Please login");
+		};
+		logger.info("DeleteInput :" + input);
+		String[] values = input.split("::@@::");
+		
+		 logger.debug("getEntity :>>>>>>>>>>>>>>>>>> 1:"+values[1] + ", 2:"+ values[2] +", 3:"+values[3]);	
+	    	
+		
+		scriptInputsRepository.deleteByScriptNameAndScriptIdAndInputName( values[2], new Long(values[1]), values[3]);
+		
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		if (auth == null) {
+			logger.debug("session expired");
+			new Response("Done", "session expired. Please login");	
+		} 
+		//scriptMasterDao.DeleteScriptInput(new Long(scriptId));
+		Response response = new Response("Done", "Deleted");
+		return response;
+		
 	}
 
 	@Autowired

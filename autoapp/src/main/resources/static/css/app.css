@@ -1,4 +1,11 @@
-
+.form-control {
+    width: 100%;
+    height: calc(1.30rem + 2px);
+    padding: 0.0rem .75rem;
+    font-size: 0.9rem;
+    border-radius: .25rem;
+    transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+}
 ul {
  list-style: none;
  padding: 0;
@@ -62,6 +69,12 @@ table {
 	width: 100%;
 }
 
+.table td, .table th {
+	padding: 0.3rem;
+    vertical-align: center;
+    border-top: 1px solid #dee2e6;
+}
+
 thead, tbody, tr, td, th {
 	display: block;
 }
@@ -74,9 +87,8 @@ tr:after {
 }
 
 thead th {
-	height: 30px;
-    width: 12.5%;
-	text-align: left;
+	height: 45px;
+    text-align: left;
 }
 
 tbody {

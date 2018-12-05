@@ -2,12 +2,13 @@ package com.waitrose.app.entity;
 
 import java.sql.Date;
 
+import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
 /**
  * 
  * @author Saravanan
@@ -24,6 +25,7 @@ public class ScriptInputs {
     private String scriptName;
     
     @Id
+    @Basic(optional = false)
     @Column(name = "INPUT_NAME", length = 60, nullable = true)
     private String inputName;
  

@@ -31,7 +31,6 @@ import com.waitrose.app.service.AppServiceImpl;
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter
-//		implements ApplicationListener<AuthenticationSuccessEvent>
 {
 	@Autowired
 	private Environment env;
@@ -127,27 +126,5 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter
 	public AuthenticationManager customAuthenticationManager() throws Exception {
 		return authenticationManager();
 	}
-//
-//	@Override
-//	public void onApplicationEvent(AuthenticationSuccessEvent event) {
-//		String username = event.getAuthentication().getName(); // auth.getName();
-//
-//		System.out.println("UserService ::: :::::::");
-//		System.out.println("UserService ::: username >>>>" + username);
-//		System.out.println("UserService ::: :::::::");
-//		if (username != null) {
-//			Date date = new Date();
-//			
-//			//DateFormat.getInstance().format(date);
-//			
-//			//new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(rs.getString("CREATION_TIME"));
-//			
-//			userDetailsService.updateLastUsed(DateFormat.getInstance().format(date), username);
-//
-//		} else {
-//			System.out.println("Principal is null:>>>>>>>>>>>>>>>>>> ");
-//		}
-//
-//	}
 
 }

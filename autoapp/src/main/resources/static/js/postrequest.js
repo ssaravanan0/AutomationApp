@@ -297,7 +297,7 @@ $(".run").click(function(event) {
     	//alert(trid);
     	$.ajax({
 			type : "GET",
-			url : "api/all?name="+ $(this).attr("id"),
+			url : "api/findinputs?name="+ $(this).attr("id"),
 			//data : JSON.stringify($(this).attr("id")),
 			dataType : 'json',
 			success: function(result){

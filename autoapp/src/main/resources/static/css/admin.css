@@ -1,3 +1,12 @@
+.form-control {
+    width: 100%;
+    height: calc(1.30rem + 2px);
+    padding: 0.0rem .75rem;
+    font-size: 0.9rem;
+    border-radius: .25rem;
+    transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+}
+
 
 ul {
  list-style: none;
@@ -62,6 +71,12 @@ table {
 	width: 100%;
 }
 
+.table td, .table th {
+    padding: 0.3rem;
+    vertical-align: center;
+    border-top: 1px solid #dee2e6;
+}
+
 thead, tbody, tr, td, th {
 	display: block;
 }
@@ -74,7 +89,7 @@ tr:after {
 }
 
 thead th {
-	height: 30px;
+	height: 2.0rem;
     width: 12.5%;
 	text-align: left;
 }
@@ -139,4 +154,38 @@ tbody td, thead th {
 	line-height: 300px;
 	font-family: "Trebuchet MS", verdana, arial, tahoma;
 	font-size: 18pt;
+}
+
+
+
+.header-fixed {
+    width: 100% 
+}
+
+.header-fixed > thead,
+.header-fixed > tbody,
+.header-fixed > thead > tr,
+.header-fixed > tbody > tr,
+.header-fixed > thead > tr > th,
+.header-fixed > tbody > tr > td {
+    display: block;
+}
+
+.header-fixed > tbody > tr:after,
+.header-fixed > thead > tr:after {
+    content: ' ';
+    display: block;
+    visibility: hidden;
+    clear: both;
+}
+
+.header-fixed > tbody {
+    overflow-y: auto;
+    height: 250px;
+}
+
+.header-fixed > tbody > tr > td,
+.header-fixed > thead > tr > th {
+    width: 25%;
+    float: left;
 }

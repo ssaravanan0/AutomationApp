@@ -3,6 +3,7 @@ com\waitrose\app\controller\RestWebController.class
 com\waitrose\app\config\WebSecurityConfig.class
 com\waitrose\app\dao\AppUserDAO.class
 com\waitrose\app\entity\AppUser.class
+com\waitrose\app\form\Params.class
 com\waitrose\app\entity\ScriptInputs.class
 com\waitrose\app\dao\AppRoleDAO.class
 com\waitrose\app\utils\WebUtils.class

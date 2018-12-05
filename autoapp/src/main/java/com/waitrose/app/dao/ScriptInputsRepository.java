@@ -10,18 +10,14 @@ import com.waitrose.app.entity.ScriptInputs;
 public interface ScriptInputsRepository extends CrudRepository<ScriptInputs, String>  {
 	@Transactional
 	@Modifying
-	//@Query(value = "update ScriptInputs set inputType=?, required=? where inputName=? and scriptId=? and scriptName =?", nativeQuery = true) 
 	@Query(value = "update script_inputs set input_type=?, required=? where input_name=? and script_id=? and script_name=?", nativeQuery = true) 
-	int updateUserSetStatusForName(String inputType, String required, String inputName, long scriptId, String scriptName);
-	
-	//@Transactional    
-	//@Modifying
-	//@Query(value="DELETE FROM script_inputs WHERE input_name=? and script_id=? and script_name=?", nativeQuery = true); 
-	//void deleteByStart_dateAndUsernameAndEnd_date(Date start_date,String username,Date end_date);
+	int updateScriptInputsSetInputTypeAndInputName(String inputType, String required, String inputName, long scriptId, String scriptName);
 	
 	@Modifying
     @Transactional
+    @Query(value = "delete from script_inputs where script_name=? and script_id=? and input_name=?", nativeQuery = true)
     void deleteByScriptNameAndScriptIdAndInputName(String ScriptName, long ScriptId, String InputName);
+
 	 
    
 }

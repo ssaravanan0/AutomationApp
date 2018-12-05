@@ -1,82 +1,56 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
-   <head>
-      <title th:utext="${title}"></title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <script src="/js/admin.js"></script>
-    <link rel="stylesheet" type="text/css" href="/css/admin.css">
-    <link rel="stylesheet" type="text/css" href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto|Varela+Round|Open+Sans">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-    
+<head>
+<title th:utext="${title}"></title>
+<meta charset="utf-8">
+<!-- <meta name="viewport" content="width=device-width, initial-scale=1"> -->
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<script
+	src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+<script src="/js/admin.js"></script>
+<script src="/js/manageinputs.js"></script>
+<link rel="stylesheet" type="text/css" href="/css/admin.css">
+<link rel="stylesheet" type="text/css" href="/css/dropdown.css">
 </head>
-<body>
- 
- <nav role="navigation" class="navbar navbar-default" style ="margin-bottom: 0px">
-		 
-		<div class="navbar-collapse">
-			<ul class="nav navbar-nav">
-				<a class="navbar-brand">Script Executor</a>
-			</ul>
- 		<ul class="nav navbar-nav navbar-right">
-				<a class="navbar-brand">Waitrose</a>
-			</ul>
- 		</ul>
- 		</div>
-	</nav>
-<div>
+<body style="font-family:calibri;font-size: 0.9rem;">
 
-<div class="container" style="font-family:calibri;padding-top:12px;
-margin-left:5vw;">
-		<ul class="navbar-right">
-			<a  href="#" class="manageScripts">Manage Scripts</a> |
+ 
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+     <div id="navbarNavDropdown" class="navbar-collapse collapse">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+               <a class="navbar-brand" >Script Executor</a>
+            </li>
+        </ul>
+        <ul class="navbar-nav">
+            <li class="nav-item">
+                <a class="navbar-brand" >Waitrose</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+ 
+<div class="container-fluid">
+        <div class="row">
+            <div class="col-md-6"></div> 
+            <div class="col-md-6 text-right align-self-end"><a  href="#" class="manageScripts">Manage Scripts</a> |
 			<a  href="#" class="manageScriptInputs" >Manage Script Inputs</a> |
 			<a  href="#" class="manageUsers" >Manage Users</a> |
-			<a  href="#" class="manageGroup" >Manage Group</a>
-		</ul>
+			<a  href="#" class="manageGroup" >Manage Group</a></div>
+        </div>
 </div>
 
-
-<div id='divMenuContainer' style="display: none;">
-			<header>
-				<ul class="main-nav">
-					<li><button class="btn">&#127968 HOME</button>/&nbsp;&nbsp;&nbsp;&nbsp;</li>
-					<li class="dropdown"><button class="btn">USER MENU</button>&nbsp;/&nbsp;&nbsp;&nbsp;&nbsp;
-						<ul class="drop-nav">
-							<li><button class="dropdownbtn">ADD TASK</button></li>
-							<li><button class="dropdownbtn">EDIT TASK</button></li>
-							<li><button class="dropdownbtn">RECENT HOTO</button></li>
-							<li>
-							<li><button class="dropdownbtn">DOWNLOAD REPORT</button></li>
-						</ul></li>
-					<li class="dropdown"><button class="btn">ADMIN</button>&nbsp;/&nbsp;&nbsp;
-						<ul class="drop-nav">
-							<li><button class="dropdownbtn">ADD USER</button></li>
-							<li><button class="dropdownbtn">ANALYTICS</button></li>
-							<li><button class="dropdownbtn">UNLOCK USER</button></li>
-						</ul></li>
-					<li><input type="text" id="myInput" class="w3-searchinput"
-						onkeyup="doSearch()" placeholder="SEARCH HERE"></li>
-					<li>/&nbsp;&nbsp;&nbsp;
-						<button class="btn" onclick="submitLogoff();">LOGOFF&nbsp;&nbsp;&nbsp;&nbsp;</button>
-					</li>
-					<li></li>
-				</ul>
-			</header>
-
-</div>
-
-
-	</div>
 <div th:if="${scriptList != null}"> 
- <div id = "scriptlistDiv" style="font-family:calibri;padding-top:12px;display: none;" class="table-responsive" th:object="${scriptList}" > 
+ <div id = "scriptlistDiv" style="padding-top:1.0rem;display: none;" class="table-responsive" th:object="${scriptList}" > 
    <div class="col-sm-4">
 			<button type="button" class="btn btn-info add-new">
 				<i class="fa fa-plus"></i> Add New
 			</button>
 		</div>
+		
 <table class="table table-striped" id="manageScripts" >
     <thead>
       <tr>
@@ -113,37 +87,64 @@ margin-left:5vw;">
 			<form id = "inputForm" autocomplete="off" 
 				th:object="${params}"  class="form-horizontal"
 				role="form">				
-				<div id = "postResultDiv1" style="font-family:calibri;padding-top:12px;"></div>
+				<div id = "postResultDiv1" style="padding-top:12px;"></div>
 			</form>
 		</div>
 	</div>
 </div>
-<div id = "postResultDiv" class="container" style="display: none;font-family:calibri;padding-top:12px;
-margin-left:5vw;">
+<div id = "postResultDiv" class="container" style="display: none;padding-top:12px;margin-left:5vw;">
 </div>
 
 <div id = "addRemoveScriptsDiv" class="container" style="display: none;">
 </div>
 
-<div id = "addRemoveInputsDiv" class="container" style="display: none;">
+<div id = "addRemoveInputsDiv" style="width:900px;display: none;" >
  
-<h4>Manage Input Scripts</h4>
+<!-- todo  <div class="dropdown" >
+				
+				<div  th:if="${scriptList != null}" id="myDropdown" class="dropdown-content">
+					<input type="text" placeholder="Search.." id="myInput" >
+						<a th:each="item :${scriptList}" th:href="${item.scriptId}" th:text="${item.scriptName}">
+				</div>
+</div>
+ -->
 
+ <div th:if="${scriptList != null}" id = "selectedScriptInputDiv" class="table-responsive" style="margin-left:5vw;padding-top:12px;width: 50%;">
 
-<div th:if="${scriptList != null}"> 
-  <div id = "selectedScriptInputDiv" class="table-responsive" th:object="${scriptList}" >
-	<ul>
-	<label for="sel1">Select the script name :</label>			 
-	 <select th:id="selectScriptName" class="form-control">
-		 <option>Please select...</option>
-		 <option th:each="item :${scriptList}" th:value="${item.scriptId}" th:text="${item.scriptName}">
-		</option>  
-	</select>
-	</ul>
-</div>	
-	<div id = "scriptInputResultDiv" class="table-responsive">   
-		   
+			<select th:id="selectScriptName" class="form-control">
+				<option>Please select the script ...</option>
+				<option th:each="item :${scriptList}" th:value="${item.scriptId}"
+					th:text="${item.scriptName}"></option>
+			</select>
+ 
+			
+
+		</div>	
+<div id = "scriptInputResultDiv" class="containertable-responsive" style="display: none;padding-top:12px;margin-left:5vw;">
+
+	<div class="col-sm-4">
+		<button type= "button" class="btn btn-info add-new-input">
+			<i class="fafa-plus"></i> Add New
+		</button>
 	</div>
+
+	<div class="container table-responsive" style="padding-top:12px;" >
+	<table class="table table-striped header-fixed" id = "manageScriptInputsTbl" >
+    	<thead>
+    	<tr>
+        	<th>Input Name</th>
+        	<th>Input Type</th>
+        	<th>Required?</th>
+        	<th>Action</th>
+    	</tr>
+    	</thead>
+    <tbody>
+       
+    </tbody>
+    
+	</table>
+	</div>   
+</div>
 </div>
  
 
@@ -176,7 +177,7 @@ this is add Remove GroupsDiv
 </div> 
 
     
-  <footer class="footer" style = "font-family:calibri;"> 
+ <!--  <footer class="footer" > 
         <div class="container">
 		<ul class="nav navbar-left">
 			<li><a th:if="${#request.userPrincipal != null}" th:href="@{/logout}">Logout</a></li>
@@ -189,7 +190,18 @@ this is add Remove GroupsDiv
 		</ul>
 		</div> 
 </footer>
-
+ -->
+ 
+ 
+ <footer class="bg-dark text-white mt-4 footer">
+    <div class="container-fluid py-3">
+        <div class="row">
+            <div class="col-md-6"><a th:if="${#request.userPrincipal != null}" th:href="@{/logout}">Logout</a></div>
+            <div class="col-md-3"><a th:if="${#request.userPrincipal != null}">Welcome : <span th:utext="${#request.userPrincipal.name}"></span> </a></div>
+            <div class="col-md-3 text-right small align-self-end"><a th:if="${#request.userPrincipal != null}">Last used : <span th:utext="${lastUsed}"></span></a></div>
+        </div>
+    </div>
+</footer>
 
 
 </body>
