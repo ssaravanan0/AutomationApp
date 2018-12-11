@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.waitrose.app.entity.ScriptInputs;
 import com.waitrose.app.entity.ScriptMaster;
 
+
 @Repository
 @Transactional
 public class ScriptMasterDao {
@@ -27,8 +28,6 @@ public class ScriptMasterDao {
 
 	@Autowired
 	private EntityManager entityManager;
-
-	public String loggedInSession;
 
 	public List<ScriptMaster> getScripts(String access) {
 		try {

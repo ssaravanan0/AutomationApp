@@ -67,44 +67,46 @@ ul {
 
 /**
 **/
-table {
+table.table-striped {
 	width: 100%;
 }
 
-.table td, .table th {
+.table.table-striped td, .table.table-striped th {
     padding: 0.3rem;
     vertical-align: center;
     border-top: 1px solid #dee2e6;
 }
 
-thead, tbody, tr, td, th {
+
+.table.table-striped.thead, .table.table-striped.tbody, .table.table-striped.tr, .table.table-striped.td, .table.table-striped.th {
 	display: block;
 }
 
-tr:after {
+
+.table.table-striped.tr:after {
 	content: ' ';
 	display: block;
 	visibility: hidden;
 	clear: both;
 }
 
-thead th {
+.table.table-striped.thead th {
 	height: 2.0rem;
     width: 12.5%;
 	text-align: left;
 }
 
-tbody {
+.table .tbody {
 	height: 400px;
 	overflow-y: auto;
 }
 
-thead {
+.table.table-striped.thead {
 	/* fallback */
 	
 }
 
-tbody td, thead th {
+.table.table-striped.tbody td, .table.table-striped.thead th {
 	width: 12.5%;
 	float: left;
 }
@@ -156,8 +158,66 @@ tbody td, thead th {
 	font-size: 18pt;
 }
 
+header-fixed {
+    width: 100% 
+}
 
+.scriptlist-header-fixed > thead,
+.scriptlist-header-fixed > tbody,
+.scriptlist-header-fixed > thead > tr,
+.scriptlist-header-fixed > tbody > tr,
+.scriptlist-header-fixed > thead > tr > th,
+.scriptlist-header-fixed > tbody > tr > td {
+    display: block;
+}
 
+.scriptlist-header-fixed > tbody > tr:after,
+.scriptlist-header-fixed > thead > tr:after {
+    content: ' ';
+    display: block;
+    visibility: hidden;
+    clear: both;
+}
+
+.scriptlist-header-fixed > tbody {
+    overflow-y: auto;
+    height: 250px;
+}
+
+.scriptlist-header-fixed > tbody > tr > td,
+.scriptlist-header-fixed > thead > tr > th {
+    width: 12.5%;
+    float: left;
+}
+<!-manage users->
+.user-header-fixed > thead,
+.user-header-fixed > tbody,
+.user-header-fixed > thead > tr,
+.user-header-fixed > tbody > tr,
+.user-header-fixed > thead > tr > th,
+.user-header-fixed > tbody > tr > td {
+    display: block;
+}
+
+.user-header-fixed > tbody > tr:after,
+.user-header-fixed > thead > tr:after {
+    content: ' ';
+    display: block;
+    visibility: hidden;
+    clear: both;
+}
+
+.user-header-fixed > tbody {
+    overflow-y: auto;
+    height: 250px;
+}
+
+.user-header-fixed > tbody > tr > td,
+.user-header-fixed > thead > tr > th {
+    width: 20%;
+    float: left;
+}
+<!--script input-->
 .header-fixed {
     width: 100% 
 }
@@ -189,3 +249,111 @@ tbody td, thead th {
     width: 25%;
     float: left;
 }
+
+
+
+.role-header-fixed {
+    width: 100% 
+}
+
+.role-header-fixed > thead,
+.role-header-fixed > tbody,
+.role-header-fixed > thead > tr,
+.role-header-fixed > tbody > tr,
+.role-header-fixed > thead > tr > th,
+.role-header-fixed > tbody > tr > td {
+    display: block;
+}
+
+.role-header-fixed > tbody > tr:after,
+.role-header-fixed > thead > tr:after {
+    content: ' ';
+    display: block;
+    visibility: hidden;
+    clear: both;
+}
+
+.role-header-fixed > tbody {
+    overflow-y: auto;
+    height: 250px;
+}
+
+.role-header-fixed > tbody > tr > td,
+.role-header-fixed > thead > tr > th {
+    width: 25%;
+    float: left;
+}
+
+/*to be removed */
+
+.report-header-fixed {
+    width: 100% 
+}
+
+.report-header-fixed > thead,
+.report-header-fixed > tbody,
+.report-header-fixed > thead > tr,
+.report-header-fixed > tbody > tr,
+.report-header-fixed > thead > tr > th,
+.report-header-fixed > tbody > tr > td {
+    display: block;
+}
+
+.report-header-fixed > tbody > tr:after,
+.report-header-fixed > thead > tr:after {
+    content: ' ';
+    display: block;
+    visibility: hidden;
+    clear: both;
+}
+
+.report-header-fixed > tbody {
+    overflow-y: auto;
+    height: 300px;
+}
+
+.report-header-fixed > tbody > tr > td,
+.report-header-fixed > thead > tr > th {
+    
+    float: left;
+}
+
+    .input-field > input {
+        width: 100%;
+        color: #000000;
+        border: 0;
+        height: 30px;
+        padding: 5px 10px;
+        border-bottom: 1px solid #D6D6D6;
+    }
+.input-field {
+    padding: 10px;
+}
+.top-fields, .bottom-fields {
+    background: none repeat scroll 0 0 #ECECEC;
+    float: left;
+    padding: 10px;
+    width: 100%;
+    -webkit-border-radius: 0 3px 0 0;
+    -moz-border-radius: 0 3px 0 0;
+    -ms-border-radius: 0 3px 0 0;
+    -o-border-radius: 0 3px 0 0;
+    border-radius: 0 3px 0 0;
+}
+
+.plan-tour {
+    background: none repeat scroll 0 0 #FFFFFF;
+    float: left;
+    padding-left: 180px;
+    position: relative;
+    width: 100%;
+	margin-top: 10px;
+    margin-bottom: 10px;
+    min-height: 140px;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    -ms-border-radius: 5px;
+    -o-border-radius: 5px;
+    border-radius: 5px;
+}
+

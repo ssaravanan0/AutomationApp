@@ -9,11 +9,45 @@ $( document ).ready(function() {
 	var currentValue ="";
 	var updatedvalue = "";
 	var saparator = "::@@::";
+	var usrAndRoles;
 	
 	//hide script list by default    
 	//$('#scriptlistDiv').hide();
-	$(".manageScripts").click(function(event) {
-		$('#scriptlistDiv').show();
+	var requestRunning = false;
+	$(".reports").click(function(event) {
+		$('#addRemoveUsersDiv').hide();
+		$('#addRemoveInputsDiv').hide();
+		$('#scriptlistDiv').hide();
+		$('#addRemoveGroupsDiv').hide();
+		$('#postResultDiv').hide();
+		$('#postResultDiv1').hide();
+		$('#auditResultDiv').show(); 
+		
+		if (!requestRunning) { // don't do anything if already data loaded
+			
+			/*reload report
+			 table = $('#auditTable').DataTable( {
+			    paging: false
+			} );
+			 
+			table.destroy(); */ 
+	         
+			var table = $('#auditTable').DataTable({
+				"sAjaxSource": "/api/report" ,
+				"sAjaxDataProp": "",
+				"order": [[ 0, "asc" ]],
+				"aoColumns": [
+				      { "mData": "scriptId"},
+			          { "mData": "scriptName" },
+					  { "mData": "executedOn" },
+					  { "mData": "executionTime" },
+					  { "mData": "status" },
+					  { "mData": "executedBy" }				 
+				]
+	      })
+		}
+	 $("#auditTable").show();
+	 requestRunning = true;
 	});
 
 	$(".manageScripts").click(function(event) {
@@ -22,18 +56,10 @@ $( document ).ready(function() {
 		$('#scriptlistDiv').show();
 		$('#addRemoveGroupsDiv').hide();
 		$('#postResultDiv').hide();
-		
+		$('#reportsDiv').hide();
+		$("#auditResultDiv").hide();	
 	});
-
-	$(".manageUsers").click(function(event) {
-		$('#addRemoveInputsDiv').hide();
-		$('#addRemoveUsersDiv').show();
-		$('#scriptlistDiv').hide();
-		$('#addRemoveGroupsDiv').hide();
-		$('#postResultDiv').hide();
-		$('#postResultDiv1').hide();
-	});
-
+	
 	$(".manageScriptInputs").click(function(event) {
 		$('#addRemoveUsersDiv').hide();
 		$('#addRemoveInputsDiv').show();
@@ -41,38 +67,559 @@ $( document ).ready(function() {
 		$('#addRemoveGroupsDiv').hide();
 		$('#postResultDiv').hide();
 		$('#postResultDiv1').hide();
-		/* When the user clicks on the button,
-		toggle between hiding and showing the dropdown content */
-		//$("#myDropdown").show();		 
+		$('#reportsDiv').hide();
+		$("#auditResultDiv").hide(); 
 	});
-	
-	
- 
-	
-	/* $("#myInput").keydown(function(event){
-		//alert("calling");
-		var input, filter, ul, li, a, i;
-	    input = document.getElementById("myInput");
-	    filter = input.value.toUpperCase();
-	    div = document.getElementById("myDropdown");
-	    a = div.getElementsByTagName("a");
-	    for (i = 0; i < a.length; i++) {
-	        if (a[i].innerHTML.toUpperCase().indexOf(filter) > -1) {
-	            a[i].style.display = "";
-	        } else {
-	            a[i].style.display = "none";
-	        }
-	    }
-	});*/
-	
-	 
+		 
 	$(".manageGroup").click(function(event) {
 		$('#addRemoveGroupsDiv').show();
 		$('#addRemoveUsersDiv').hide();
 		$('#addRemoveInputsDiv').hide();
 		$('#scriptlistDiv').hide();	 
 		$('#postResultDiv').hide();
+		$('#auditResultDiv').hide();
+		
+		getRoles();
+		
+		
 	});
+	
+	$(document).on("click", ".cancelAddNewGroup", function(){
+		 alert("cancel new group");
+		 $(this).parents("tr").remove();
+		 $(".add-new-group").removeAttr("disabled");
+		});
+
+	$(document).on("click", ".cancelrole", function(){ 
+    	//alert("You have clicked the cancel");
+    	event.preventDefault();
+    	$(this).parents("tr").find(".editrole, .removerole").show();
+    	var input = $(this).parents("tr").find('input[type="text"]');
+    	input.each(function(){    	
+    		$(this).parent("td").html($(this).val())
+    	});
+    	$(this).parents("tr").find('td').each(
+    			function (i) {
+    				if(i==2){
+    					$(this).html(selectedDropdownRole);
+    				}
+    	});
+    	$(this).parents("tr").find(".saverole").hide();
+    	$(this).parents("tr").find(".cancelrole").hide();
+	});
+	//add new user
+	$(document).on("click", ".add-new-group", function(){
+			alert("add new group >>");
+	    	$(this).attr("disabled", "disabled");
+			var index = $("table-inputs tbody tr:last-child").index();
+			$("#roleTbl").show();
+			var row = '<tr>' +
+	            '<td class="filterable-cell"></td>' +
+	            '<td class="filterable-cell"><input type="text" class="form-control" name="gname" id="gname"></td>' +
+	            '<td class="filterable-cell"><input type="text" class="form-control" name="gprefix" id="gprefix"></td>' +
+	            '<td class="filterable-cell"><a href="#" class="addNewGroup"> Save </a><a href="#" class="cancelAddNewGroup"> Cancel </a></td>' +
+	            '</tr>';
+			$("#roleTbl").append(row);
+			
+	    	$(row).insertBefore('table table-inputs > tbody > tr:first');
+			$("table table-inputs tbody tr").eq(index + 1).find(".add, .edit").toggle();
+	});
+	
+	$(".manageUsers").click(function(event) {
+		$('#addRemoveInputsDiv').hide();
+		$('#addRemoveUsersDiv').show();
+		$('#scriptlistDiv').hide();
+		$('#addRemoveGroupsDiv').hide();
+		$('#postResultDiv').hide();
+		$('#postResultDiv1').hide();
+		$('#reportsDiv').hide();
+		$("#auditResultDiv").hide();
+		$("#userTbl").hide();
+		
+		getUsers(false);
+		getRoles();
+	});
+	
+	var roleList;
+	function getRoles(){
+		$.ajax({
+			type : "GET",
+			contentType : "application/json",
+			url : "/group/getgroups",
+			data : updatedvalue,
+			dataType : 'json',
+			success : function(result) {
+				if(result.status == "Done"){
+					roleList = result.data;
+					$("#roleTbl td").remove();
+					$("#selectGroup").empty();
+					$.each(result.data, function(i){
+						$("#selectGroup").append('<option value='+result.data[i].roleId+'>'+result.data[i].roleName+'</option>');
+						
+						$("#roleTbl").append('<tr><td>'+result.data[i].roleId+'</td><td>'+result.data[i].roleName+'</td><td>'+result.data[i].rolePrefix+'</td>'
+								+'<td><a href="#" class="editrole"> Edit </a> <a href="#"  class="removerole" >Remove</a>'
+				    			+'<a href="#" class="saverole" style="display: none;" > Save </a><a href="#" class="cancelrole" style="display: none;"> Cancel </a></td></tr>');
+					});
+ 				}else if(result.status == "Session expired"){
+					location.reload();
+				}
+				console.log(result);
+			},
+			error : function(e) {
+				//alert("Error!"+ e)
+			}
+		});
+	}
+	
+	function getUsers(isDropDownRefresh){
+		$.ajax({
+			type : "GET",
+			contentType : "application/json",
+			url : "/user/getusers" ,
+			//data : scriptid=,
+			dataType : 'json',
+			success : function(result) {
+				if(result.status == "Done"){ 
+					usrAndRoles = result;
+					var map = {};
+					$('select option').each(function () {
+					    if (map[this.value]) {
+					        $(this).remove()
+					    }
+					    map[this.value] = true;
+						if(isDropDownRefresh == true){
+					        //alert("You have selected the role - " + selectedRole);
+					        $("#userTbl td").remove();
+							$("#userTbl").show();
+					    	$.each(result.data, function(i){
+					    		if(result.data[i].appRole.roleId == selectedRole){
+					    			$("#userTbl").append('<tr><td>'+result.data[i].appUser.userId+'</td><td>'+result.data[i].appUser.userName+'</td><td>'+result.data[i].appRole.roleName+'</td><td>'+result.data[i].appUser.enabled+'</td>'
+					    					+'<td><a href="#" class="edituser"> Edit </a> <a href="#"  class="removeuser" >Remove</a>'
+					    			+'<a href="#" class="saveuser" style="display: none;" > Save </a><a href="#" class="canceluser" style="display: none;"> Cancel </a></td></tr>');
+					    		}// 
+					    	});	
+						}
+					//////////////////////
+					})			 
+ 				}else if(result.status == "Session expired"){
+					location.reload();
+				} 
+				console.log(result);
+			},
+			error : function(e) {
+				alert("Error!"+ e)
+			}
+		});
+	}
+	
+	$(document).on("click", ".saverole", function(){
+		 //alert("saveuser");
+		 $(".add-new-group").removeAttr("disabled");
+		 
+		    var empty = false;
+			var input = $(this).parents("tr").find('input[type="text"]', 'option:selected');
+			
+			input.each(function(){
+				if(!$(this).val()){
+					$(this).addClass("error")
+					empty = true;
+					//alert("empty")
+				} else{
+		         $(this).removeClass("error");
+		     }
+			});
+			
+			$(this).parents("tr").find(".error").first().focus();
+			alert("currentValue :"+currentValue);
+			var postContent ;
+			if(!empty){
+				updatedvalue = saparator + $(this).parent().siblings(":first").text();
+				var col2=$('#1').val(); 
+		        var col3=$('#2').val();
+		        updatedvalue = updatedvalue + saparator + col2 + saparator + col3 ;
+				alert("after changing:"+ updatedvalue);
+			}
+			
+			if(updatedvalue == currentValue)
+			{
+			 alert("both are same");
+			}else {
+			  alert("both are different .. update it in db");
+				
+				$(".add-new-user").removeAttr("disabled");
+				//alert(">>" + newscriptcontent)
+				$.ajax({
+					type : "PUT",
+					contentType : "application/json",
+					url : "/group/updategroup",
+					data : updatedvalue,
+					dataType : 'json',
+					success : function(result) {
+						if(result.status == "Done"){
+							//showResults();
+							getRoles();
+							//showUsers();
+							
+		 				}else if(result.status == "Session expired"){
+							location.reload();
+						}
+						console.log(result);
+					},
+					error : function(e) {
+						alert("Error!"+ e)
+					}
+				});
+			}
+		});
+	
+	$(document).on("click", ".saveuser", function(){
+		 //alert("saveuser");
+		 $(".add-new-user").removeAttr("disabled");
+		 
+		    var empty = false;
+			var input = $(this).parents("tr").find('input[type="text"]', 'option:selected');
+			
+			input.each(function(){
+				if(!$(this).val()){
+					$(this).addClass("error")
+					empty = true;
+					//alert("empty")
+				} else{
+		         $(this).removeClass("error");
+		     }
+			});
+			
+			$(this).parents("tr").find(".error").first().focus();
+			//alert("currentValue"+currentValue);
+			var postContent ;
+			if(!empty){
+				updatedvalue = saparator + $(this).parent().siblings(":first").text();
+				var col2=$('#1').val(); // get current row 2nd TD
+		        var col3=$('.updaterole').find(":selected").val();  // get current row 3rd TD
+		        var col4=$('#3').val();
+		        updatedvalue = updatedvalue + saparator + col2 + saparator + col3 + saparator + col4 
+				//alert("after changing:"+ updatedvalue);
+			}
+			
+			if(updatedvalue == currentValue)
+			{
+			 //alert("both are same");
+			}else {
+			  //alert("both are different .. update it in db");
+				
+				$(".add-new-user").removeAttr("disabled");
+				//alert(">>" + newscriptcontent)
+				$.ajax({
+					type : "PUT",
+					contentType : "application/json",
+					url : "/user/updateuser",
+					data : updatedvalue,
+					dataType : 'json',
+					success : function(result) {
+						if(result.status == "Done"){
+							//showResults();
+							getUsers(true);
+							//showUsers();
+							
+		 				}else if(result.status == "Session expired"){
+							location.reload();
+						}
+						console.log(result);
+					},
+					error : function(e) {
+						alert("Error!"+ e)
+					}
+				});
+			}
+		});
+	
+	$(document).on("click", ".addNewGroup", function(){
+		 alert("add new group");
+		 $(".add-new-group").removeAttr("disabled");
+		    var empty = false;
+			var input = $(this).parents("tr").find('input[type="text"]');
+			input.each(function(){
+				if(!$(this).val()){
+					$(this).addClass("error");
+					empty = true;
+				} else{
+		         $(this).removeClass("error");
+		     }
+			});
+			$(this).parents("tr").find(".error").first().focus();
+			if(!empty){
+				$(this).parents("tr").find(".addNewUser, .cancelAddNewUser").hide();
+				$(".add-new-group").removeAttr("disabled");
+			 
+				$.ajax({
+					type : "POST",
+					contentType : "application/json",
+					url : "/group/addgroup",
+					data : saparator+$('#gname').val()+saparator+$('#gprefix').val(),
+					dataType : 'json',
+					success : function(result) {
+						if(result.status == "Done"){
+							getRoles();
+		 				}else if(result.status == "Session expired"){
+							location.reload();
+						}
+						console.log(result);
+					},
+					error : function(e) {
+						alert("Error!"+ e)
+					}
+				});
+			}
+		});
+	
+	$(document).on("click", ".removerole", function(){ 
+		event.preventDefault();
+		alert("delete role");
+		var removeGroupId = $(this).parent().siblings(":first").text();
+		alert("removeGroupId"+removeGroupId);
+		$(".add-new-group").removeAttr("disabled");
+			  $.ajax({
+					type : "DELETE",
+					contentType : "application/json",
+					url : "/group/deletegroup",
+					data : removeGroupId,
+					dataType : 'json',
+					
+					success : function(result) {
+						if(result.status == "Done"){
+							$(this).parents("tr").remove();
+							getRoles();
+		 				}else if(result.status == "Session expired"){
+							location.reload();
+						}else{
+		 				}
+						console.log(result);
+					},
+					error : function(e) {
+						alert("Error!"+ e)
+					}
+				})
+		});
+	
+	$(document).on("click", ".addNewUser", function(){
+		 //alert("add new script"+ selectedScriptId + $(".saveScriptInput").attr('id'));
+		 $(".add-new-user").removeAttr("disabled");
+		    var empty = false;
+			var input = $(this).parents("tr").find('input[type="text"]', 'option:selected');
+			input.each(function(){
+				if(!$(this).val()){
+					$(this).addClass("error");
+					empty = true;
+					//alert("empty")
+				} else{
+		         $(this).removeClass("error");
+		     }
+			});
+			$(this).parents("tr").find(".error").first().focus();
+			if(!empty){
+				var currentRow=$(this).closest("tr"); 
+		        var col2=$('#name').val(); // get current row 2nd TD
+		        var col3=$('.role').find(":selected").val();  // get current row 3rd TD
+		        var col4=$('#enabled').find(":selected").val(); // get current row 4th TD 
+		        var postContent = saparator +col2+saparator +col3+saparator +col4; 
+				$(this).parents("tr").find(".addNewUser, .cancelAddNewUser").hide();
+				$(".add-new-user").removeAttr("disabled");
+				$.ajax({
+					type : "POST",
+					contentType : "application/json",
+					url : "/user/adduser",
+					data : postContent,
+					dataType : 'json',
+					success : function(result) {
+						if(result.status == "Done"){
+							getUsers(true);
+		 				}else if(result.status == "Session expired"){
+							location.reload();
+						}
+						console.log(result);
+					},
+					error : function(e) {
+						alert("Error!"+ e)
+					}
+				});
+			}
+		});
+	
+	//add new user
+	$(document).on("click", ".add-new-user", function(){
+			//alert("add new user >>");
+	    	$(this).attr("disabled", "disabled");
+			var index = $("table-inputs tbody tr:last-child").index();
+			$("#userTbl").show();
+			var row = '<tr>' +
+	            '<td class="filterable-cell"></td>' +
+	            '<td class="filterable-cell"><input type="text" class="form-control" name="name" id="name"></td>' +
+	            '<td class="filterable-cell">'+addRolesForAddNewUser()+'</td>'+
+	            '<td class="filterable-cell"><select id="enabled"> <option value="1" >Yes</option><option value="0" >No</option></select></td>'+
+	            '<td class="filterable-cell"><a href="#" class="addNewUser"> Save </a><a href="#" class="cancelAddNewUser"> Cancel </a></td>' +
+	            '</tr>';
+			$("#userTbl").append(row);
+			
+	    	$(row).insertBefore('table table-inputs > tbody > tr:first');
+			$("table table-inputs tbody tr").eq(index + 1).find(".add, .edit").toggle();
+	});
+	
+	function addRolesForAddNewUser(){
+		var content ='<select class="role">';
+		$.each(roleList, function(i){	
+				content = content + '<option value="'+roleList[i].roleId+'" >'+roleList[i].roleName+'</option>';
+		});
+		content = content+ '</select>';
+		return content ;
+	}
+	
+	var selectedIndex;
+	function addRolesInDropDown(selected){
+		var content ='<select class="updaterole">';
+		$.each(roleList, function(i){	
+			if(roleList[i].roleName == selected){
+				//alert("yes selected" + roleList[i].appRole.roleId )
+				selectedIndex = roleList[i].roleId;
+				content = content + '<option value="'+roleList[i].roleId+'" selected="selected" >'+roleList[i].roleName+'</option>';	
+			}else{
+				content = content + '<option value="'+roleList[i].roleId+'" >'+roleList[i].roleName+'</option>';
+			}
+		});
+		content = content+ '</select>';
+		return content ;
+	}
+	var selectedRole;
+	$(document).on("change", "#selectGroup", function(){
+		selectedRole = $(this).children("option:selected").val(); 
+	        //alert("You have selected the role - " + selectedRole);
+	        $("#userTbl td").remove();
+			$("#userTbl").show();
+	    	$.each(usrAndRoles.data, function(i){
+	    		if(usrAndRoles.data[i].appRole.roleId == selectedRole){
+	    			$("#userTbl").append('<tr><td>'+usrAndRoles.data[i].appUser.userId+'</td><td>'+usrAndRoles.data[i].appUser.userName+'</td><td>'+usrAndRoles.data[i].appRole.roleName+'</td><td>'+usrAndRoles.data[i].appUser.enabled+'</td>'
+	    					+'<td><a href="#" class="edituser"> Edit </a> <a href="#"  class="removeuser" >Remove</a>'
+	    			+'<a href="#" class="saveuser" style="display: none;" > Save </a><a href="#" class="canceluser" style="display: none;"> Cancel </a></td></tr>');
+	    		}// 
+	    	});	
+	
+	
+	});	
+	
+	$(document).on("click", ".editrole", function(){ 
+		//alert("You have clicked the edit user link");
+		event.preventDefault();
+		currentValue = "";
+		$(this).parents("tr").find('td').each(
+			function (i) {
+				     if(i!=3){
+				    	 currentValue = currentValue + saparator + $(this).text();
+				     }
+				      
+				    if(i != 0 && i != 3){
+				          $(this).html('<input type="text" id ='+ i +' class="form-control" value="' + $(this).text() + '">');      
+					}
+				   				    
+	    }); 
+		
+		
+		
+		//alert("before change :"+ currentValue);	
+		$(this).parents("tr").find(".editrole, .removerole").toggle();
+		$(this).parents("tr").find(".saverole, .cancelrole").toggle();
+	});
+	
+	 var selectedDropdownRole;
+	$(document).on("click", ".edituser", function(){ 
+		//alert("You have clicked the edit user link");
+		event.preventDefault();
+		currentValue = "";
+		$(this).parents("tr").find('td').each(
+			function (i) {
+				     if(i!=4){
+				    	 currentValue = currentValue + saparator + $(this).text();
+				     }
+				     if(i == 2){
+				    	 currentValue = currentValue + saparator + $(this).text();
+				    	 selectedDropdownRole = $(this).html();
+					    	$(this).html(addRolesInDropDown($(this).html()));
+					    	/*$(".updaterole option").val(function(idx, val) {
+								 $(this).siblings('[value="'+ val +'"]').remove();
+							});*/ 
+					    	var map = {};
+							$('.updaterole option').each(function () {
+							    if (map[this.value]) {
+							        $(this).remove()
+							    }
+							    map[this.value] = true;
+							})	
+							
+							$(".updaterole").val(selectedIndex);
+							
+				     }
+				    if(i != 0 && i != 2 && i!=4){
+				          $(this).html('<input type="text" id ='+ i +' class="form-control" value="' + $(this).text() + '">');      
+					}	   				    
+	    }); 
+		//alert("before change :"+ currentValue);	
+		$(this).parents("tr").find(".edituser, .removeuser").toggle();
+		$(this).parents("tr").find(".saveuser, .canceluser").toggle();
+	});
+	
+	$(document).on("click", ".canceluser", function(){ 
+    	//alert("You have clicked the cancel");
+    	event.preventDefault();
+    	$(this).parents("tr").find(".edituser, .removeuser").show();
+    	var input = $(this).parents("tr").find('input[type="text"]');
+    	input.each(function(){    	
+    		$(this).parent("td").html($(this).val())
+    	});
+    	
+    	$(this).parents("tr").find('td').each(
+    			function (i) {
+    				if(i==2){
+    					$(this).html(selectedDropdownRole);
+    				}
+    	});
+    	
+    	
+    	//$(".updatescript").hide();
+    	$(this).parents("tr").find(".saveuser").hide();
+    	$(this).parents("tr").find(".canceluser").hide();
+    	 
+    	
+
+	});
+	
+	$(document).on("click", ".removeuser", function(){ 
+		event.preventDefault();
+		alert("delete user");
+		var removeUserId = $(this).parent().siblings(":first").text();	 
+		$(".add-new-user").removeAttr("disabled");
+			  $.ajax({
+					type : "POST",
+					contentType : "application/json",
+					url : "/user/deleteuser",
+					data : removeUserId,
+					dataType : 'json',
+					
+					success : function(result) {
+						if(result.status == "Done"){
+							$(this).parents("tr").remove();
+							getUsers(true);
+							//showUsers();
+		 				}else if(result.status == "Session expired"){
+							location.reload();
+						}else{
+		 				}
+						console.log(result);
+					},
+					error : function(e) {
+						alert("Error!"+ e)
+					}
+				})
+		});
+	
+	
 
 	//add new
 	//var actions = $("table td:last-child").html();
@@ -424,7 +971,7 @@ $(document).on("click", ".runnewscript", function(){
 			    });
 	$.ajax({
 		type : "GET",
-		url : "api/all?name="+$(this).parent().siblings(":first").text(),
+		url : "api/findinputs?name="+$(this).parent().siblings(":first").text(),
 		dataType : 'json',
 		success: function(result){
 				if(result.status == "Done"){
@@ -575,7 +1122,7 @@ function ajaxPost(){
 				}else if(result.status == "Session expired"){
 					location.reload();
 				}else{ 
-					$("#postResultDiv").html("<strong>Error</strong>");
+					$("#postResultDiv").html("<strong>Error in response. Please contact admin team</strong>");
 				}
 				console.log(result);
 			},
@@ -588,5 +1135,7 @@ function ajaxPost(){
 			}
 		});
     }
+
+
      
 })

@@ -17,7 +17,5 @@ public interface ScriptInputsRepository extends CrudRepository<ScriptInputs, Str
     @Transactional
     @Query(value = "delete from script_inputs where script_name=? and script_id=? and input_name=?", nativeQuery = true)
     void deleteByScriptNameAndScriptIdAndInputName(String ScriptName, long ScriptId, String InputName);
-
-	 
    
 }

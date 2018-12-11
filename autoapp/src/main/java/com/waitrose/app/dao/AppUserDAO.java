@@ -1,7 +1,5 @@
 package com.waitrose.app.dao;
 
-import java.util.Date;
-
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
@@ -12,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.waitrose.app.controller.RestWebController;
 import com.waitrose.app.entity.AppUser;
 
 /**
@@ -43,6 +40,19 @@ public class AppUserDAO {
         }
     }
     
+    public AppUser getUsers() {
+        try {
+            String sql = "Select e from " + AppUser.class.getName() + " e " //
+                    + " Where e.userName = :userName ";
+ 
+            Query query = entityManager.createQuery(sql, AppUser.class);
+           
+            return (AppUser) query.getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        }
+    }
+    
     public void updateLastUsed(String d, String userName) {
     	
     	try {
@@ -56,17 +66,5 @@ public class AppUserDAO {
         }
     	
     }
-    
-    
-    
-    
-//    public AppUser save(AppUser appUser) {
-//        try {
-//            
-//            
-//        } catch (NoResultException e) {
-//            return null;
-//        }
-//    }
  
 }

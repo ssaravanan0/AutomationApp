@@ -4,11 +4,12 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
 /**
  * 
  * @author Saravanan
@@ -18,16 +19,21 @@ import javax.persistence.UniqueConstraint;
 @Table(name = "User_Role")
 public class UserRole {
  
-    @Id
-    @GeneratedValue
+	@Id
+	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="role_entry_seq")
+	@SequenceGenerator(
+		name="role_entry_seq",
+		sequenceName="role_entry_seq",
+		allocationSize=1
+	)
     @Column(name = "Id", nullable = false)
     private Long id;
  
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "User_Id", nullable = false)
     private AppUser appUser;
  
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "Role_Id", nullable = false)
     private AppRole appRole;
  

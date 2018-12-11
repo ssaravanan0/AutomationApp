@@ -1,13 +1,13 @@
 package com.waitrose.app.entity;
 
-import java.util.Date;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.SecondaryTable;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
 /**
  * 
  * @author Saravanan
@@ -15,10 +15,16 @@ import javax.persistence.UniqueConstraint;
  */
 @Entity
 @Table(name = "App_User")
+@SecondaryTable(name = "User_Role")
 public class AppUser {
- 
-    @Id
-    @GeneratedValue
+	
+	@Id
+	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="user_entry_seq")
+	@SequenceGenerator(
+		name="user_entry_seq",
+		sequenceName="user_entry_seq",
+		allocationSize=1
+	)
     @Column(name = "User_Id", nullable = false)
     private Long userId;
  
@@ -33,10 +39,13 @@ public class AppUser {
 
     @Column(name = "last_used", nullable = false)
     private String lastUsed;
+    
+    @Column(table = "User_Role")
+    private Long role_id;
  
     public Long getUserId() {
         return userId;
-    }
+    } 
  
     public void setUserId(Long userId) {
         this.userId = userId;
@@ -74,6 +83,16 @@ public class AppUser {
 	public void setLastUsed(String lastUsed) {
 		this.lastUsed = lastUsed;
 	}
-    
+
+	public Long getRole_id() {
+		return role_id;
+	}
+
+	public void setRole_id(Long role_id) {
+		this.role_id = role_id;
+	}
+
+	
+	
  
 }

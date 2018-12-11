@@ -1,33 +1,39 @@
-
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
-   <head>
-      <title th:utext="${title}"></title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <script src="/js/postrequest.js"></script>
-     
-    <link rel="stylesheet" type="text/css" href="/css/app.css">
+<head>
+<title th:utext="${title}"></title>
+<meta charset="utf-8">
+<!-- <meta name="viewport" content="width=device-width, initial-scale=1"> -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+<script src="/js/admin.js"></script>
+<script src="/js/manageinputs.js"></script>
+<link rel="stylesheet" type="text/css" href="/css/admin.css"> 
 </head>
-<body>
+<body style="font-family:calibri;font-size: 0.9rem;">
+  
+ <nav class="navbar navbar-expand-lg navbar-light bg-light">
+     <div id="navbarNavDropdown" class="navbar-collapse collapse">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+               <a class="navbar-brand">Script Executor</a>
+            </li>
+        </ul>
+        <ul class="navbar-nav">
+            <li class="nav-item"> 
+                <a class="navbar-brand" href="#">
+          <img src="/img/waitrose.jpg" alt="" style="height:62px;">
+        </a>
+            </li> 
+        </ul>
+    </div>
+</nav>
  
-  <nav role="navigation" class="navbar navbar-default">
-		<div class=""></div>
-		<div class="navbar-collapse">
-			<ul class="nav navbar-nav">
-				<a class="navbar-brand" style="font-family:calibri;" >Script Executor</a>
-			</ul>
-			<ul class="nav navbar-nav navbar-right" style = "">
-				<!-- <li><a th:href="@{/user}">Manage Scripts</a></li> -->
-				<a class="navbar-brand" style="font-family:calibri;" >Waitrose</a>
-			</ul>
-		</div>
-	</nav>
 
-<div class="container">
+<div class="container" style="padding-top:4.0rem;width:800px; margin:0 auto;position: absolute;height: 200px; z-index: 15;top: 30%; left: 50%; margin: -100px 0 0 -150px;">
 
-	<div class="row">
+	 
 
 		<div class="col-md-4 col-md-offset-3">
 			<form autocomplete="off" name='f'
@@ -47,15 +53,17 @@
 							Static summary </span>
 					</p>
 				</div>
+				<div>
                  <input style="display:none" type="checkbox" name="remember-me" checked/>
-                <div class="col-md-6 col-md-offset-3">
-				<button class="btn btn-lg btn-primary btn-block" name="Submit"
-					value="Login" type="Submit" th:text="Login" style="font-family:calibri;" ></button>
-					</div>
+                 <button class="btn btn-info" style="margin: 0 0 0 66px;" type="Submit">
+					<i class="fa fa-plus">Login</i>
+				</button>
+				</div>
+               
 			</form>
 		</div>
 	</div>
-</div>
+
 
 <!-- <br>
 Username/pass:
@@ -63,6 +71,12 @@ Username/pass:
 	<li>dbuser1/123</li>
 	<li>dbadmin1/123</li>
 </ul>
+
+  <div class="col-sm-4">
+			<button type="button" class="btn btn-info add-new">
+				<i class="fa fa-plus"></i> Add New
+			</button>
+		</div>
  -->
 
 </body>

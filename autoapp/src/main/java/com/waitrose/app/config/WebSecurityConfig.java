@@ -62,14 +62,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter
 		http.csrf().disable();
 		// The pages does not require login
 		http.authorizeRequests().antMatchers("/", "/login", "/logout").permitAll();
+		// For ADMIN only.
+		http.authorizeRequests().antMatchers("/admin").access(env.getProperty("adminpage.access"));
 		// /user page requires login as ROLE_USER or ROLE_ADMIN.
 		// If no login, it will redirect to /login page.
 		http.authorizeRequests().antMatchers("/user").access(env.getProperty("userpage.access"));
 		// http.authorizeRequests().antMatchers("/user1").access("hasAnyRole('ROLE_USER',
 		// 'ROLE_ADMIN')");
 		http.authorizeRequests().antMatchers("/").access(env.getProperty("loginpage.access")); 
-		// For ADMIN only.
-		http.authorizeRequests().antMatchers("/admin").access(env.getProperty("adminpage.access"));
+		
 		// When the user has logged in as XX.
 		// But access a page that requires role YY,
 		// AccessDeniedException will be thrown.
@@ -79,7 +80,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter
 				// Submit URL of login page.
 				.loginProcessingUrl("/j_spring_security_check") // Submit URL
 				.loginPage("/login")//
-				.defaultSuccessUrl("/user")//
 				.failureUrl("/login?error=true")//
 				.usernameParameter("username")//
 				.passwordParameter("password")
