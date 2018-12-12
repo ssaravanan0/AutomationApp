@@ -67,7 +67,7 @@ public class ManageScriptController {
 		};
 		logger.debug("getScriptInputs"+ name);
 		try {
-			// for audit purpose
+			// for audit purpose 
 			scriptId = name;
 			List<ScriptInputs> inputs = appServiceImpl.getScriptInputs(name);
 			logger.debug("size of inputs : " + inputs.size());
@@ -78,6 +78,33 @@ public class ManageScriptController {
 		}
 		return null;
 	}
+	
+	@GetMapping(value = "/findscriptbyprefix")
+	public Response findScripts(@RequestParam(name = "prefix") String rolePrefix) {
+		if(!isValidsession()) {
+			return new Response("Session expired", "Please login");
+		};
+		logger.debug("getScriptInputs"+ rolePrefix);
+		try {
+			List<ScriptMaster> scriptList;
+			if(rolePrefix.equals("")) {
+				scriptList = scriptMasterRepository.findByAccess(rolePrefix);
+				logger.info(">>>>>>>>>>>>>>>>>find scritps by access : " + scriptList.size());
+			}else {
+				scriptList = (List<ScriptMaster>) scriptMasterRepository.findAll();
+				logger.info(">>>>>>>>>>>>>>>>>find all scritps : " + scriptList.size());
+			}
+			// for audit purpose
+			
+			logger.debug("size of inputs : " + scriptList.size());
+			return new Response("Done", scriptList);
+		}catch(Exception e) {
+			logger.error("Error in executing UpdateScript method :" + e.getMessage());
+			e.printStackTrace();
+		}
+		return null;
+	}
+
 
 	
 	@GetMapping(value = "/report")

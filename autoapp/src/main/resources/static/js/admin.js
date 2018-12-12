@@ -59,6 +59,7 @@ $( document ).ready(function() {
 		$('#reportsDiv').hide();
 		$("#auditResultDiv").hide();
 		getRoles();
+		getScripts();
 	});
 	
 	$(".manageScriptInputs").click(function(event) {
@@ -140,6 +141,44 @@ $( document ).ready(function() {
 		getUsers(false);
 		getRoles();
 	});
+	
+	function getScripts(){
+		//alert("getscripts")
+		$.ajax({
+			type : "GET",
+			contentType : "application/json",
+			url : "/api/findscriptbyprefix?prefix=''",
+			dataType : 'json',
+			success : function(result) {
+				if(result.status == "Done"){
+					//roleList = result.data;
+					$("#manageScripts td").remove();
+					//$("#selectGroup").empty();
+					$.each(result.data, function(i){
+						//alert(result.data[i].location);
+						$("#manageScripts").append('<tr id='+result.data[i].location + result.data[i].scriptName+'.'+result.data[i].prefix+'>'+     
+				        '<td class="filterable-cell">'+result.data[i].scriptId+'</td>'+
+				        '<td class="filterable-cell">'+result.data[i].scriptName+'</td>'+
+				        '<td class="filterable-cell">'+result.data[i].scriptDesc+'</td>'+
+				        '<td class="filterable-cell">'+result.data[i].location+'</td>'+
+				        '<td class="filterable-cell">'+result.data[i].prefix+'</td>'+
+				        '<td class="filterable-cell">'+result.data[i].access+'</td>'+
+				        '<td class="filterable-cell" ><a href="#" id='+result.data[i].scriptId+' class=run>run</a></td>'+
+				        '<td class="filterable-cell"> <a href="#" id='+ result.data[i].scriptId+' class="editscript"> Edit </a> <a href="#" id='+result.data[i].scriptId+'  class="removescript" >Remove</a>'+ 
+				        '<a href="#" id='+ result.data[i].scriptId +' class="updatescript" style="display: none;" > Save </a><a href="#" id='+result.data[i].scriptId+' class="cancelupdatescript" style="display: none;"> Cancel </a></td>');
+				        '</tr>' ;
+						
+					});
+ 				}else if(result.status == "Session expired"){
+					location.reload();
+				}
+				console.log(result);
+			},
+			error : function(e) {
+				//alert("Error!"+ e)
+			}
+		});
+	}
 	
 	var roleList;
 	function getRoles(){
@@ -491,6 +530,7 @@ $( document ).ready(function() {
 	}
 	
 	function addRolesWithPrefixInDropDown(selected){
+		//alert(selected)
 		var content ='<select class="updaterole">';
 		$.each(roleList, function(i){	
 			//alert(roleList[i].rolePrefix +","+ selected)
@@ -664,6 +704,13 @@ $( document ).ready(function() {
         //alert("You have selected the role - " + selectedRole);
     });
     
+    $(document).on("click", ".cancelAddNewUser", function(){
+    	 //alert("cancel new script");
+    	 $(this).parents("tr").remove();
+    	 $(".add-new-user").removeAttr("disabled");
+    	});
+
+    
     //cancel to add new script
     $(document).on("click", ".canceladdnewscript", function(){
      //alert("cancel new script");
@@ -692,10 +739,11 @@ $( document ).ready(function() {
 		var prefix;
 	 
 		if(!empty){
-			
+			var selectedR = $('.updaterole').find(":selected").val();
 			$(this).parents("tr").find('td').each (function(i) {
 				if(i==5){
-					$(this).html($('.updaterole').find(":selected").val());
+					//alert("adding value")
+					$(this).html(selectedR);
 				}
 			});		
 			input.each(function(i){
@@ -712,9 +760,9 @@ $( document ).ready(function() {
 	    			     }
 			});
 			
-			newscriptcontent = newscriptcontent + saparator + $('.updaterole').find(":selected").val();
+			newscriptcontent = newscriptcontent + saparator + selectedR;
 			newScriptNameWithPrefix=loc+scriptName+"."+prefix;
-			 //alert(newScriptNameWithPrefix)
+			 //alert(newscriptcontent)
 			$(this).parents("tr").find(".addnewscript, .cancelnewscript").hide();
 			$(this).parents("tr").find(".editnewscript, .removenewscript").show();
 			//$(this).parents("tr").find(".cancelnewescript").show();
@@ -733,6 +781,9 @@ $( document ).ready(function() {
 						$(this).parents("tr").find(".updatescript").attr('id', result.data.scriptId);
 						input.each(function(){
 							$("#newScriptId").html(result.data.scriptId);
+							
+							getRoles();
+							getScripts();
 						});	
 						tmpScrId =  result.data.scriptId;
 						 
@@ -781,7 +832,8 @@ $(document).on("click", ".removenewscript", function(){
 			});	 	
 	});
 //remove link
-$(".removescript").click(function(event) {
+$(document).on("click", ".removescript", function(){
+//$(".removescript").click(function(event) {
 		event.preventDefault();
 		var removeScriptId = $(this).attr('id');	 
 		 $(this).parents("tr").remove();
@@ -861,8 +913,8 @@ $(document).on("click", ".cancelnewscript", function(){
 	$(this).parents("tr").find(".runnewscript").show();
     }
 });
-
-$(".editscript").click(function(event) {
+$(document).on("click", ".editscript", function(){
+//$(".editscript").click(function(event) {
 	//alert("edit");
 	event.preventDefault();
 	//disable run link
@@ -1059,8 +1111,8 @@ $(document).on("click", ".runnewscript", function(){
 	$("#postResultDiv").hide();
 
 });
-
-$(".run").click(function(event) {
+$(document).on("click", ".run", function(){
+//$(".run").click(function(event) {
     	event.preventDefault();
     	//get id of selected script name 
     	trid = $(this).closest('tr').attr('id'); 

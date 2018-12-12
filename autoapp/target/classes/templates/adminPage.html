@@ -50,7 +50,7 @@
  <div id = "scriptlistDiv" style="padding-top:1.0rem;display: none;" class="table-responsive" th:object="${scriptList}" > 
    <div class="col-sm-4">
 			<button type="button" class="btn btn-info add-new">
-				<i class="fa fa-plus"></i> Add New
+				<i class="fa fa-plus"></i> Add new script
 			</button>
 		</div><br/> 
 		
@@ -67,18 +67,7 @@
         <th>Actions</th>
       </tr>
     </thead>
-    <tbody> <!-- "${iterator.index + 1}" -->
-     <tr th:id="${item.location} + ${item.scriptName}+.+${item.prefix}" th:each="item :${scriptList}">     
-        <td class="filterable-cell" th:text="${item.scriptId}" ></td>
-        <td class="filterable-cell" th:text="${item.scriptName}"></td>
-        <td class="filterable-cell" th:text="${item.scriptDesc}"></td>
-        <td class="filterable-cell" th:text="${item.location}"></td>
-        <td class="filterable-cell" th:text="${item.prefix}"></td>
-        <td class="filterable-cell"  th:text="${item.access}"></td> 
-        <td class="filterable-cell" ><a href="#" th:id="${item.scriptId}" class="run">run</a></td>
-        <td class="filterable-cell"> <a href="#" th:id="${item.scriptId}" class="editscript"> Edit </a> <a href="#" th:id="${item.scriptId}"  class="removescript" >Remove</a> 
-        <a href="#" th:id="${item.scriptId}" class="updatescript"> Save </a><a href="#" th:id="${item.scriptId}" class="cancelupdatescript"> Cancel </a></td>
-    </tr> 
+    <tbody> 
     </tbody>
   </table>
   </div>
@@ -98,10 +87,10 @@
 <div id = "postResultDiv" class="container" style="display: none;padding-top:12px;margin-left:5vw;">
 </div>
 
-<div id = "addRemoveScriptsDiv" class="container" style="display: none;">
+<div id = "addRemoveScriptsDiv" style="display: none;">
 </div>
 
-<div id = "addRemoveInputsDiv" style="width:900px;display: none;" >
+<div id = "addRemoveInputsDiv" style="display: none;" >
  
 <!-- todo  <div class="dropdown" >
 				
@@ -112,7 +101,7 @@
 </div>
  -->
 
-<div th:if="${scriptList != null}" id = "selectedScriptInputDiv" class="table-responsive" style="margin-left:5vw;padding-top:12px;width: 50%;">
+<div th:if="${scriptList != null}" id = "selectedScriptInputDiv" class="table-responsive" style="margin-left:5vw;padding-top:12px;width: 25%;">
 			<select th:id="selectScriptName" class="form-control">
 				<option>Please select the script ...</option>
 				<option th:each="item :${scriptList}" th:value="${item.scriptId}"
@@ -120,14 +109,14 @@
 			</select>
 </div>	
 
-<div id = "scriptInputResultDiv" class="containertable-responsive" style="display: none;padding-top:12px;margin-left:5vw;">
-	<div class="col-sm-4">
+<div id = "scriptInputResultDiv" class="table-responsive" style="display: none;padding-top:12px;">
+	<div class="col-sm-4" style="margin-left:5vw;">
 		<button type= "button" class="btn btn-info add-new-input">
-			<i class="fafa-plus"></i> Add New
+			<i class="fafa-plus"></i> Add new input
 		</button>
 	</div>
 
-	<div class="container table-responsive" style="padding-top:12px;" >
+	<div class="table-responsive" style="padding-top:12px;" >
 	<table class="table table-striped header-fixed" id = "manageScriptInputsTbl" >
     	<thead>
     	<tr>
@@ -146,20 +135,20 @@
 </div>
 </div>
  
-<div id = "addRemoveUsersDiv" class="container" style="display: none;">
-
-	<select th:id="selectGroup" class="form-control" style="width:50%;">
+<div id = "addRemoveUsersDiv" style="display: none;padding-top:1.0rem;">
+    <div class="col-sm-4 row" style="margin-left:5vw;padding-top:12px;width: 25%;">
+	 <label for="selectGroup">Search by : </label> 
+	&nbsp<select th:id="selectGroup" class="form-control" style="width:50%;">
 				<option>Please select the Group</option>
-	</select><br/>
-	
-<div class="col-sm-4">
-		<button type= "button" class="btn btn-info add-new-user">
-			<i class="fafa-plus"></i> Add new
-		</button>
-</div><br/>
+	</select></div>
+	<div class="col-sm-4" style="margin-left:5vw;padding-top:12px;">
+	<button type= "button" class="btn btn-info add-new-user">
+			<i class="fafa-plus"></i> Add new user
+	</button></div>
+<br><br>
 
- <table class="table table-striped user-header-fixed" id = "userTbl" >
-    	<thead >
+ <table class="table table-striped user-header-fixed" id = "userTbl" style="padding-top:1.0rem;">
+    	<thead>
     	<tr> 
       	    <th>User id</th>
         	<th>User name</th>
@@ -173,13 +162,15 @@
 	</table>
 </div>
 
-<div id = "addRemoveGroupsDiv" class="container" style="display: none;">
+<div id = "addRemoveGroupsDiv" style="display: none;padding-top:1.0rem;padding-top:12px;">
+	<div class="col-sm-4" style="margin-left:5vw;">
 	<button type= "button" class="btn btn-info add-new-group">
-			<i class="fafa-plus"></i> Add new
-		</button>
-		
-<table class="table table-striped role-header-fixed" id = "roleTbl" >
-    	<thead >
+			<i class="fafa-plus"></i> Add new group
+	</button>
+	</div>
+		<br>
+<table class="table table-striped role-header-fixed" id = "roleTbl" style="padding-top:1.0rem;">
+    	<thead>
     	<tr> 
       	    <th>Group id</th>
         	<th>Group name</th>
@@ -223,7 +214,7 @@
 </div>			
  --> 
 			
-<div id = "auditResultDiv" style="display: none;padding-top:12px;width:94%">
+<div id = "auditResultDiv" style="display: none;padding-top:12px;">
  
   <table id="auditTable" class="display">
       
