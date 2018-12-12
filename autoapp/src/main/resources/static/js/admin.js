@@ -57,7 +57,8 @@ $( document ).ready(function() {
 		$('#addRemoveGroupsDiv').hide();
 		$('#postResultDiv').hide();
 		$('#reportsDiv').hide();
-		$("#auditResultDiv").hide();	
+		$("#auditResultDiv").hide();
+		getRoles();
 	});
 	
 	$(".manageScriptInputs").click(function(event) {
@@ -85,7 +86,7 @@ $( document ).ready(function() {
 	});
 	
 	$(document).on("click", ".cancelAddNewGroup", function(){
-		 alert("cancel new group");
+		 //alert("cancel new group");
 		 $(this).parents("tr").remove();
 		 $(".add-new-group").removeAttr("disabled");
 		});
@@ -109,7 +110,7 @@ $( document ).ready(function() {
 	});
 	//add new user
 	$(document).on("click", ".add-new-group", function(){
-			alert("add new group >>");
+			//alert("add new group >>");
 	    	$(this).attr("disabled", "disabled");
 			var index = $("table-inputs tbody tr:last-child").index();
 			$("#roleTbl").show();
@@ -230,21 +231,21 @@ $( document ).ready(function() {
 			});
 			
 			$(this).parents("tr").find(".error").first().focus();
-			alert("currentValue :"+currentValue);
+			//alert("currentValue :"+currentValue);
 			var postContent ;
 			if(!empty){
 				updatedvalue = saparator + $(this).parent().siblings(":first").text();
 				var col2=$('#1').val(); 
 		        var col3=$('#2').val();
 		        updatedvalue = updatedvalue + saparator + col2 + saparator + col3 ;
-				alert("after changing:"+ updatedvalue);
+				//alert("after changing:"+ updatedvalue);
 			}
 			
 			if(updatedvalue == currentValue)
 			{
-			 alert("both are same");
+			 //alert("both are same");
 			}else {
-			  alert("both are different .. update it in db");
+			  //alert("both are different .. update it in db");
 				
 				$(".add-new-user").removeAttr("disabled");
 				//alert(">>" + newscriptcontent)
@@ -334,7 +335,7 @@ $( document ).ready(function() {
 		});
 	
 	$(document).on("click", ".addNewGroup", function(){
-		 alert("add new group");
+		 ("add new group");
 		 $(".add-new-group").removeAttr("disabled");
 		    var empty = false;
 			var input = $(this).parents("tr").find('input[type="text"]');
@@ -374,9 +375,9 @@ $( document ).ready(function() {
 	
 	$(document).on("click", ".removerole", function(){ 
 		event.preventDefault();
-		alert("delete role");
+		("delete role");
 		var removeGroupId = $(this).parent().siblings(":first").text();
-		alert("removeGroupId"+removeGroupId);
+		("removeGroupId"+removeGroupId);
 		$(".add-new-group").removeAttr("disabled");
 			  $.ajax({
 					type : "DELETE",
@@ -488,6 +489,24 @@ $( document ).ready(function() {
 		content = content+ '</select>';
 		return content ;
 	}
+	
+	function addRolesWithPrefixInDropDown(selected){
+		var content ='<select class="updaterole">';
+		$.each(roleList, function(i){	
+			//alert(roleList[i].rolePrefix +","+ selected)
+			if(roleList[i].rolePrefix == selected){
+				("yes selected" + roleList[i].rolePrefix )
+				//selectedIndex = roleList[i].roleId;
+				content = content + '<option value="'+roleList[i].rolePrefix+'" selected="selected" >'+roleList[i].roleName+'</option>';	
+			}else{
+				content = content + '<option value="'+roleList[i].rolePrefix+'" >'+roleList[i].roleName+'</option>';
+			}
+		});
+		content = content+ '</select>';
+		(content)
+		return content ;
+	}
+	
 	var selectedRole;
 	$(document).on("change", "#selectGroup", function(){
 		selectedRole = $(this).children("option:selected").val(); 
@@ -520,9 +539,6 @@ $( document ).ready(function() {
 					}
 				   				    
 	    }); 
-		
-		
-		
 		//alert("before change :"+ currentValue);	
 		$(this).parents("tr").find(".editrole, .removerole").toggle();
 		$(this).parents("tr").find(".saverole, .cancelrole").toggle();
@@ -592,7 +608,7 @@ $( document ).ready(function() {
 	
 	$(document).on("click", ".removeuser", function(){ 
 		event.preventDefault();
-		alert("delete user");
+		("delete user");
 		var removeUserId = $(this).parent().siblings(":first").text();	 
 		$(".add-new-user").removeAttr("disabled");
 			  $.ajax({
@@ -634,7 +650,7 @@ $( document ).ready(function() {
             '<td><input type="text" class="form-control" name="desc" id="desc"></td>' +
             '<td><input type="text" class="form-control" name="location" id="location"></td>' +
             '<td><input type="text" class="form-control" name="prefix" id="prefix"></td>' +
-            '<td><input type="text" class="form-control" name="access" id="access"></td>' +
+            '<td>'+addRolesWithPrefixInDropDown("")+'</td>' +
     		'<td class="filterable-cell" ><a href="#" class="runnewscript" style="display: none;" >run</a></td>'+
     	    '<td class="filterable-cell"> <a href="#" class="editnewscript" style="display: none;"> Edit </a> <a href="#"  class="removenewscript" style="display: none;" >Remove</a>'+ 
     		'<a href="#" class="addnewscript"> Save </a><a href="#" class="updatescript" style="display: none;"> Save </a><a href="#" class="cancelnewscript"> Cancel </a></td>' +
@@ -676,11 +692,16 @@ $( document ).ready(function() {
 		var prefix;
 	 
 		if(!empty){
+			
+			$(this).parents("tr").find('td').each (function(i) {
+				if(i==5){
+					$(this).html($('.updaterole').find(":selected").val());
+				}
+			});		
 			input.each(function(i){
 				$(this).parent("td").html($(this).val());
 				newscriptcontent = newscriptcontent + saparator + $(this).val() ;
-	    			//alert($(this).text())
-	    			     if(i== 0){
+						if(i== 0){
 	    			    	 scriptName = $(this).val();
 	    			     }
 	    			     if(i== 2){
@@ -688,9 +709,10 @@ $( document ).ready(function() {
 	    			     }
 	    			     if(i== 3){
 	    			    	 prefix=$(this).val();
-	    			     }  
+	    			     }
 			});
 			
+			newscriptcontent = newscriptcontent + saparator + $('.updaterole').find(":selected").val();
 			newScriptNameWithPrefix=loc+scriptName+"."+prefix;
 			 //alert(newScriptNameWithPrefix)
 			$(this).parents("tr").find(".addnewscript, .cancelnewscript").hide();
@@ -711,7 +733,7 @@ $( document ).ready(function() {
 						$(this).parents("tr").find(".updatescript").attr('id', result.data.scriptId);
 						input.each(function(){
 							$("#newScriptId").html(result.data.scriptId);
-						});
+						});	
 						tmpScrId =  result.data.scriptId;
 						 
 	 				}else if(result.status == "Session expired"){
@@ -726,6 +748,9 @@ $( document ).ready(function() {
 			});
 		}	
     });
+	
+	
+	
 		
 //remove new
 $(document).on("click", ".removenewscript", function(){
@@ -845,13 +870,27 @@ $(".editscript").click(function(event) {
 	currentValue = saparator + $(this).attr('id');
 	$(this).parents("tr").find('td').each(
 		function (i) {
+			
 			//alert($(this).text())
 			     if(i != 6 && i != 7){
 			    	 currentValue = currentValue + saparator + $(this).text();
-			    	 if(i != 0)
-			          $(this).html('<input type="text" class="form-control" value="' + $(this).text() + '">');
+			    	 
 			         //currentValue = currentValue + ","+ $(this).text();
-				}
+			    	 if(i == 5){
+				    	 //currentValue = currentValue + saparator + $(this).text();
+				    	 selectedDropdownRole = $(this).text();
+					    	$(this).html(addRolesWithPrefixInDropDown($(this).text()));
+					    	/*$(".updaterole option").val(function(idx, val) {
+								 $(this).siblings('[value="'+ val +'"]').remove();
+							});*/ 
+					     	
+							$(".updaterole").val(selectedDropdownRole);
+							
+				     }
+			    	 if(i != 0 && i != 5)
+				          $(this).html('<input type="text" class="form-control" value="' + $(this).text() + '">');
+			     
+			     }
     });
 	//alert("before change :"+ currentValue)
 	$(this).parents("tr").find(".editscript, .removescript").toggle();
@@ -865,6 +904,12 @@ $(document).on("click", ".cancelupdatescript", function(){
 	input.each(function(){
 		$(this).parent("td").html($(this).val());
 		updatedvalue = updatedvalue + saparator + $(this).val() ;;
+	});
+	$(this).parents("tr").find('td').each(
+			function (i) {
+				if(i==5){
+					$(this).html(selectedDropdownRole);
+				}
 	});
 	$(this).parents("tr").find(".editscript, .removescript").toggle();
 	//$(".updatescript").hide();
@@ -897,6 +942,7 @@ $(document).on("click", ".updatescript", function(){
 			updatedvalue = updatedvalue + saparator + $(this).val() ;
 		});	
 		
+		updatedvalue = updatedvalue + saparator +  $('.updaterole').find(":selected").val(); 
 		//alert("after changing:"+ updatedvalue);
 		
 		if(updatedvalue == currentValue)

@@ -58,7 +58,7 @@ public class AppController {
 			model.addAttribute("userInfo", userInfo);
 			List<ScriptMaster> list;
 			if (userInfo.contains("ADMIN")) {
-				list = appServiceImpl.getScripts("A");
+				list = appServiceImpl.getScripts("");
 			}
 			else {
 				list = appServiceImpl.getScripts(WebUtils.getRolePrefix(loginedUser));
