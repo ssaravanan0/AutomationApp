@@ -26,7 +26,7 @@ import com.waitrose.app.utils.WebUtils;
 /**
  * 
  * @author Saravanan
- *
+ * 
  */
 @Controller
 public class AppController {
@@ -44,41 +44,49 @@ public class AppController {
     }	
 	@RequestMapping(value = { "/", "/welcome", "/user", "/admin" }, method = RequestMethod.GET)
 	public String welcomePage(Model model, Principal principal) {
-		System.out.println("================landing page controller==================");
-		logger.debug("Stored session id");	
+		logger.info("================landing page controller==================");
+		//logger.debug("Stored session id");	
 		manageUserServiceImpl.loggedInSession = RequestContextHolder.currentRequestAttributes().getSessionId();
 		if (principal == null)
 			return "loginPage";
 		try {
 			// After user login successfully.
 			String userName = principal.getName();
-			System.out.println("Login user: " + userName);
+			logger.debug("Login user: " + userName);
 			User loginedUser = (User) ((Authentication) principal).getPrincipal();
 			String userInfo = WebUtils.toString(loginedUser);
 			model.addAttribute("userInfo", userInfo);
-			List<ScriptMaster> list;
-			if (userInfo.contains("ADMIN")) {
-				list = appServiceImpl.getScripts("");
-			}
-			else {
-				list = appServiceImpl.getScripts(WebUtils.getRolePrefix(loginedUser));
-			}
-			
-			Collections.reverse(list);
-			model.addAttribute("scriptList", list);
 			AppUser appUser = appServiceImpl.findUserAccount(userName);
-			if (appUser != null) {
+			if (appUser != null & appUser.isEnabled()) {
+				List<ScriptMaster> list;
+				if (userInfo.contains("ADMIN")) {
+					list = appServiceImpl.getScripts("");
+				}
+				else {
+					list = appServiceImpl.getScripts(WebUtils.getRolePrefix(loginedUser));
+				}
+				
+				Collections.reverse(list);
+				model.addAttribute("scriptList", list);
+				logger.info("appUser active?"+ appUser.isEnabled());	
 				model.addAttribute("lastUsed", appUser.getLastUsed());
-			}
-			appServiceImpl.updateLastUsed(DateFormat.getInstance().format(new Date()), userName);
-			System.out.println("stored login time");
-			System.out.println("userInfo>>>>>>>>>>>>>>>>"+ userInfo);
-			if (userInfo.contains("ADMIN")) {
-				System.out.println("================Forwarding to Admin page==================");	
-				return "adminPage";
-			} else {
-				System.out.println("================Forwarding to User page==================");	
-				return "userPage";
+				
+				appServiceImpl.updateLastUsed(DateFormat.getInstance().format(new Date()), userName);
+				logger.debug("stored login time");
+				logger.debug("userInfo>>>>>>>>>>>>>>>>"+ userInfo);
+				if (userInfo.contains("ADMIN")) {
+					logger.info("================Forwarding to Admin page==================");	
+					return "adminPage";
+				} else {
+					logger.info("================Forwarding to User page==================");	
+					return "userPage";
+				}
+			}else {
+				logger.warn("please check if active user or not");
+				String message = "Hi " + principal.getName() //
+				+ "<br> You are not active user!";
+		        model.addAttribute("message", message);
+				return "403Page";
 			}
 		}catch(Exception e) {
 			logger.error("Error in executing welcomePage method :" + e.getMessage());

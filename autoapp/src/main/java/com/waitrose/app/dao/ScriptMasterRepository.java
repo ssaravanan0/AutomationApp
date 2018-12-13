@@ -10,4 +10,7 @@ public interface ScriptMasterRepository extends CrudRepository<ScriptMaster, Lon
 	
 	List<ScriptMaster> findByAccess(String access);
 	
+	List<ScriptMaster> findByScriptNameContainingOrScriptDescContainingOrLocationContainingOrPrefixContaining(
+			  String scriptName,String scriptDesc,String location,String prefix);
+	
 }

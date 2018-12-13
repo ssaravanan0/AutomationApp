@@ -58,16 +58,16 @@ public class AppServiceImpl implements UserDetailsService {
 
 	@Override
 	public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
-		System.out.println("Username >> " + userName);
+		logger.debug("Username >> " + userName);
 		// todo call the service
-		AppUser appUser = this.appUserDAO.findUserAccount(userName);
+		AppUser appUser = this.appUserDAO.findUserAccount(userName.toUpperCase());
 
 		if (appUser == null) {
 			logger.debug("User not found! " + userName);
 			throw new UsernameNotFoundException("User " + userName + " was not found in the database");
 		}
 
-		System.out.println("Found User: " + appUser);
+		logger.debug("Found User: " + appUser);
 
 		// [ROLE_USER, ROLE_ADMIN,..]
 		List<String> roleNames = this.appRoleDAO.getRoleNames(appUser.getUserId());
@@ -83,7 +83,7 @@ public class AppServiceImpl implements UserDetailsService {
 
 		UserDetails userDetails = (UserDetails) new User(appUser.getUserName(), appUser.getEncrytedPassword(),
 				grantList);
-		System.out.println("Found User??????????: >>>>>>>>>>>>>>>>>>" + userDetails);
+		//logger.debug("Found User??????????: >>>>>>>>>>>>>>>>>>" + userDetails);
 		return userDetails;
 	}
 	

@@ -102,7 +102,7 @@ public class ScriptMasterDao {
 			int result = query.executeUpdate();
 
 			// query.executeUpdate();
-			System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>> store updated inputs" + result);
+			logger.debug(">>>>>>>>>>>>>>>>>>>>>>>>>>> store updated inputs" + result);
 			/**
 			 * Query query = Seller.entityManager().createQuery( "DELETE FROM Seller AS o
 			 * WHERE o.company=:company AND o.id=:id"); query.setParameter("company",

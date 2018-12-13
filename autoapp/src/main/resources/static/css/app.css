@@ -1,8 +1,8 @@
 .form-control {
     width: 100%;
-    height: calc(2.30rem + 2px);
+    height: calc(2.50rem + 2px);
+    font-size: 1.6rem;
     padding: 0.0rem .75rem;
-    font-size: 0.9rem;
     border-radius: .25rem;
     transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
 }

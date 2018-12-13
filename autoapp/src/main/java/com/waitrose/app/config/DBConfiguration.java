@@ -2,6 +2,8 @@ package com.waitrose.app.config;
 
 import javax.sql.DataSource;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
@@ -15,6 +17,8 @@ import org.springframework.core.env.Environment;
  */
 @Configuration
 public class DBConfiguration {
+	
+	private static final Logger logger = LoggerFactory.getLogger(DBConfiguration.class);
 
 	@Autowired
 	private Environment env;
@@ -23,7 +27,7 @@ public class DBConfiguration {
     public DataSource dataSource() {
     	String path = env.getProperty("db.path");
     	
-    	System.out.println("db path >>>>>>>>>>> " + path);
+    	logger.info("db path >>>>>>>>>>> " + path);
     	
         DataSourceBuilder dataSourceBuilder = DataSourceBuilder.create();
         dataSourceBuilder.driverClassName("org.sqlite.JDBC");

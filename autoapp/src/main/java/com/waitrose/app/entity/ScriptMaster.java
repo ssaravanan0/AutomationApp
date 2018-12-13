@@ -7,6 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 /**
@@ -18,8 +19,14 @@ import javax.persistence.UniqueConstraint;
 @Table(name = "Script_Master")
 public class ScriptMaster {
  
+	//
     @Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
+	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="script_entry_seq")
+	@SequenceGenerator(
+		name="script_entry_seq",
+		sequenceName="script_entry_seq",
+		allocationSize=20
+	)
     @Column(name = "SCRIPT_ID", nullable = false)
     private Long scriptId;
  

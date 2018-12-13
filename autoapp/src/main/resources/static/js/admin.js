@@ -11,8 +11,13 @@ $( document ).ready(function() {
 	var saparator = "::@@::";
 	var usrAndRoles;
 	
-	//hide script list by default    
-	//$('#scriptlistDiv').hide();
+	var gotRoles = false;
+	if(!gotRoles)
+	 {
+		 getRoles();
+		 gotRoles = true;
+	 }
+		
 	var requestRunning = false;
 	$(".reports").click(function(event) {
 		$('#addRemoveUsersDiv').hide();
@@ -50,6 +55,7 @@ $( document ).ready(function() {
 	 requestRunning = true;
 	});
 
+	
 	$(".manageScripts").click(function(event) {
 		$('#addRemoveInputsDiv').hide();
 		$('#addRemoveUsersDiv').hide();
@@ -59,7 +65,9 @@ $( document ).ready(function() {
 		$('#reportsDiv').hide();
 		$("#auditResultDiv").hide();
 		getRoles();
-		getScripts();
+		getScripts("");
+		$("#manageScriptDiv").show();
+		
 	});
 	
 	$(".manageScriptInputs").click(function(event) {
@@ -80,7 +88,6 @@ $( document ).ready(function() {
 		$('#scriptlistDiv').hide();	 
 		$('#postResultDiv').hide();
 		$('#auditResultDiv').hide();
-		
 		getRoles();
 		
 		
@@ -127,6 +134,7 @@ $( document ).ready(function() {
 			$("table table-inputs tbody tr").eq(index + 1).find(".add, .edit").toggle();
 	});
 	
+	var IsRoleRequested = false;
 	$(".manageUsers").click(function(event) {
 		$('#addRemoveInputsDiv').hide();
 		$('#addRemoveUsersDiv').show();
@@ -138,21 +146,35 @@ $( document ).ready(function() {
 		$("#auditResultDiv").hide();
 		$("#userTbl").hide();
 		
-		getUsers(false);
-		getRoles();
+		IsRoleRequested = false;
+		if(!IsRoleRequested){
+			getRolesForSearchDropdown();
+			IsRoleRequested = true;
+		}
+		
+	});
+	var searchScriptParam="";
+	$("#script-search-btn").click(function(event) {
+		//alert("--"+$("#script-search").val());
+		searchScriptParam = $("#script-search").val()
+		getScripts(searchScriptParam);
+		$("#manageScripts").show();
 	});
 	
-	function getScripts(){
-		//alert("getscripts")
+	function getScripts(param){
+		//alert(param)
 		$.ajax({
 			type : "GET",
 			contentType : "application/json",
-			url : "/api/findscriptbyprefix?prefix=''",
+			url : "/api/findscript?param="+param,
 			dataType : 'json',
 			success : function(result) {
 				if(result.status == "Done"){
 					//roleList = result.data;
 					$("#manageScripts td").remove();
+					if(result.data.length == 0){
+						$("#manageScripts").append("<tr><td style='width:50%' >No matching records found</td></tr>");
+					}
 					//$("#selectGroup").empty();
 					$.each(result.data, function(i){
 						//alert(result.data[i].location);
@@ -192,14 +214,44 @@ $( document ).ready(function() {
 				if(result.status == "Done"){
 					roleList = result.data;
 					$("#roleTbl td").remove();
-					$("#selectGroup").empty();
-					$.each(result.data, function(i){
-						$("#selectGroup").append('<option value='+result.data[i].roleId+'>'+result.data[i].roleName+'</option>');
-						
+					//$("#selectGroup").empty();
+					$.each(result.data, function(i){	
 						$("#roleTbl").append('<tr><td>'+result.data[i].roleId+'</td><td>'+result.data[i].roleName+'</td><td>'+result.data[i].rolePrefix+'</td>'
 								+'<td><a href="#" class="editrole"> Edit </a> <a href="#"  class="removerole" >Remove</a>'
 				    			+'<a href="#" class="saverole" style="display: none;" > Save </a><a href="#" class="cancelrole" style="display: none;"> Cancel </a></td></tr>');
 					});
+ 				}else if(result.status == "Session expired"){
+					location.reload();
+				}
+				console.log(result);
+			},
+			error : function(e) {
+				//alert("Error!"+ e)
+			}
+		});
+	}
+	
+	function getRolesForSearchDropdown(){
+		$.ajax({
+			type : "GET",
+			contentType : "application/json",
+			url : "/group/getgroups",
+			data : updatedvalue,
+			dataType : 'json',
+			success : function(result) {
+				if(result.status == "Done"){
+					roleList = result.data;
+					$.each(result.data, function(i){
+						$("#selectGroup").append('<option value='+result.data[i].roleId+'>'+result.data[i].roleName+'</option>');
+					});
+					var opt = {};
+				    $("#selectGroup > option").each(function () {
+				        if(opt[$(this).text()]) {
+				            $(this).remove();
+				        } else {
+				            opt[$(this).text()] = $(this).val();
+				        }
+				    });
  				}else if(result.status == "Session expired"){
 					location.reload();
 				}
@@ -220,13 +272,7 @@ $( document ).ready(function() {
 			dataType : 'json',
 			success : function(result) {
 				if(result.status == "Done"){ 
-					usrAndRoles = result;
-					var map = {};
-					$('select option').each(function () {
-					    if (map[this.value]) {
-					        $(this).remove()
-					    }
-					    map[this.value] = true;
+					usrAndRoles = result; 
 						if(isDropDownRefresh == true){
 					        //alert("You have selected the role - " + selectedRole);
 					        $("#userTbl td").remove();
@@ -240,7 +286,7 @@ $( document ).ready(function() {
 					    	});	
 						}
 					//////////////////////
-					})			 
+					 			 
  				}else if(result.status == "Session expired"){
 					location.reload();
 				} 
@@ -274,8 +320,18 @@ $( document ).ready(function() {
 			var postContent ;
 			if(!empty){
 				updatedvalue = saparator + $(this).parent().siblings(":first").text();
-				var col2=$('#1').val(); 
-		        var col3=$('#2').val();
+				var col2=""; 
+		        var col3="";
+				input.each(function(i){
+    				if(i==0){
+    					col2 = $(this).val();
+    				}
+    				if(i==1){
+    					col3 = $(this).val();
+    				}
+				});
+				
+				
 		        updatedvalue = updatedvalue + saparator + col2 + saparator + col3 ;
 				//alert("after changing:"+ updatedvalue);
 			}
@@ -313,7 +369,7 @@ $( document ).ready(function() {
 		});
 	
 	$(document).on("click", ".saveuser", function(){
-		 //alert("saveuser");
+		 //alert("saveuser"+ $('#1').text());
 		 $(".add-new-user").removeAttr("disabled");
 		 
 		    var empty = false;
@@ -333,10 +389,21 @@ $( document ).ready(function() {
 			//alert("currentValue"+currentValue);
 			var postContent ;
 			if(!empty){
+				var col2="";//username
+				var col4="";//isActive
+				input.each(function(i){
+		    				if(i==0){
+		    					col2 = $(this).val();
+		    				}
+		    				if(i==1){
+		    					col4 = $(this).val();
+		    				}
+		    	});
+				
 				updatedvalue = saparator + $(this).parent().siblings(":first").text();
-				var col2=$('#1').val(); // get current row 2nd TD
+				//var col2=$('#1').val(); // get current row 2nd TD
 		        var col3=$('.updaterole').find(":selected").val();  // get current row 3rd TD
-		        var col4=$('#3').val();
+		        // var col4=$('#3').val();
 		        updatedvalue = updatedvalue + saparator + col2 + saparator + col3 + saparator + col4 
 				//alert("after changing:"+ updatedvalue);
 			}
@@ -461,8 +528,9 @@ $( document ).ready(function() {
 		        var col2=$('#name').val(); // get current row 2nd TD
 		        var col3=$('.role').find(":selected").val();  // get current row 3rd TD
 		        var col4=$('#enabled').find(":selected").val(); // get current row 4th TD 
+		        //alert("true? :: "+ col4);
 		        var postContent = saparator +col2+saparator +col3+saparator +col4; 
-				$(this).parents("tr").find(".addNewUser, .cancelAddNewUser").hide();
+				
 				$(".add-new-user").removeAttr("disabled");
 				$.ajax({
 					type : "POST",
@@ -472,10 +540,15 @@ $( document ).ready(function() {
 					dataType : 'json',
 					success : function(result) {
 						if(result.status == "Done"){
+							$(this).parents("tr").find(".addNewUser, .cancelAddNewUser").hide();
 							getUsers(true);
 		 				}else if(result.status == "Session expired"){
 							location.reload();
-						}
+						}else if(result.status == "duplicate"){
+							$('#name').focus();
+							alert("username is already exist in db!!");
+						console.log(result);
+					}
 						console.log(result);
 					},
 					error : function(e) {
@@ -495,7 +568,7 @@ $( document ).ready(function() {
 	            '<td class="filterable-cell"></td>' +
 	            '<td class="filterable-cell"><input type="text" class="form-control" name="name" id="name"></td>' +
 	            '<td class="filterable-cell">'+addRolesForAddNewUser()+'</td>'+
-	            '<td class="filterable-cell"><select id="enabled"> <option value="1" >Yes</option><option value="0" >No</option></select></td>'+
+	            '<td class="filterable-cell"><select id="enabled"> <option value="1" >true</option><option value="0" >false</option></select></td>'+
 	            '<td class="filterable-cell"><a href="#" class="addNewUser"> Save </a><a href="#" class="cancelAddNewUser"> Cancel </a></td>' +
 	            '</tr>';
 			$("#userTbl").append(row);
@@ -553,15 +626,35 @@ $( document ).ready(function() {
 	        //alert("You have selected the role - " + selectedRole);
 	        $("#userTbl td").remove();
 			$("#userTbl").show();
-	    	$.each(usrAndRoles.data, function(i){
-	    		if(usrAndRoles.data[i].appRole.roleId == selectedRole){
-	    			$("#userTbl").append('<tr><td>'+usrAndRoles.data[i].appUser.userId+'</td><td>'+usrAndRoles.data[i].appUser.userName+'</td><td>'+usrAndRoles.data[i].appRole.roleName+'</td><td>'+usrAndRoles.data[i].appUser.enabled+'</td>'
-	    					+'<td><a href="#" class="edituser"> Edit </a> <a href="#"  class="removeuser" >Remove</a>'
-	    			+'<a href="#" class="saveuser" style="display: none;" > Save </a><a href="#" class="canceluser" style="display: none;"> Cancel </a></td></tr>');
-	    		}// 
-	    	});	
-	
-	
+			$.ajax({
+				type : "GET",
+				contentType : "application/json",
+				url : "/user/getusers" ,
+				//data : scriptid=,
+				dataType : 'json',
+				success : function(result) {
+					if(result.status == "Done"){ 
+						usrAndRoles = result; 
+				        //alert("You have selected the role - " + selectedRole);
+				        $("#userTbl td").remove();
+						$("#userTbl").show();
+				    	$.each(result.data, function(i){
+				    		if(result.data[i].appRole.roleId == selectedRole){
+				    			$("#userTbl").append('<tr><td>'+result.data[i].appUser.userId+'</td><td>'+result.data[i].appUser.userName+'</td><td>'+result.data[i].appRole.roleName+'</td><td>'+result.data[i].appUser.enabled+'</td>'
+				    					+'<td><a href="#" class="edituser"> Edit </a> <a href="#"  class="removeuser" >Remove</a>'
+				    			+'<a href="#" class="saveuser" style="display: none;" > Save </a><a href="#" class="canceluser" style="display: none;"> Cancel </a></td></tr>');
+				    		}// 
+				    	});	
+					  			 
+	 				}else if(result.status == "Session expired"){
+						location.reload();
+					} 
+					console.log(result);
+				},
+				error : function(e) {
+					alert("Error!"+ e)
+				}
+			});	
 	});	
 	
 	$(document).on("click", ".editrole", function(){ 
@@ -694,8 +787,11 @@ $( document ).ready(function() {
     		'<td class="filterable-cell" ><a href="#" class="runnewscript" style="display: none;" >run</a></td>'+
     	    '<td class="filterable-cell"> <a href="#" class="editnewscript" style="display: none;"> Edit </a> <a href="#"  class="removenewscript" style="display: none;" >Remove</a>'+ 
     		'<a href="#" class="addnewscript"> Save </a><a href="#" class="updatescript" style="display: none;"> Save </a><a href="#" class="cancelnewscript"> Cancel </a></td>' +
-        '</tr>';	
-    	$(row).insertBefore('table > tbody > tr:first'); 
+        '</tr>';
+        $("#manageScripts td").remove();
+        $("#manageScripts").append(row);
+        $("#manageScripts").show();
+    	//$(row).insertBefore('table > tbody > tr:first'); 
 		$("table tbody tr").eq(index + 1).find(".add, .edit").toggle(); 
     });
     
@@ -781,9 +877,8 @@ $( document ).ready(function() {
 						$(this).parents("tr").find(".updatescript").attr('id', result.data.scriptId);
 						input.each(function(){
 							$("#newScriptId").html(result.data.scriptId);
-							
 							getRoles();
-							getScripts();
+							getScripts(scriptName);
 						});	
 						tmpScrId =  result.data.scriptId;
 						 
@@ -1011,8 +1106,8 @@ $(document).on("click", ".updatescript", function(){
 					dataType : 'json',
 					success : function(result) {
 						if(result.status == "Done"){
-							//$("#main").slideUp("slow");
-							//$("#main").hide(1000);
+							getRoles();
+							getScripts(searchScriptParam);
 		 				}else if(result.status == "Session expired"){
 							location.reload();
 						}

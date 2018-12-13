@@ -65,7 +65,7 @@ public class ManageScriptController {
 		if(!isValidsession()) {
 			return new Response("Session expired", "Please login");
 		};
-		logger.debug("getScriptInputs"+ name);
+		logger.info("getScriptInputs"+ name);
 		try {
 			// for audit purpose 
 			scriptId = name;
@@ -79,19 +79,23 @@ public class ManageScriptController {
 		return null;
 	}
 	
-	@GetMapping(value = "/findscriptbyprefix")
-	public Response findScripts(@RequestParam(name = "prefix") String rolePrefix) {
+	@GetMapping(value = "/findscript")
+	public Response findScripts(@RequestParam(name = "param") String param) {
 		if(!isValidsession()) {
 			return new Response("Session expired", "Please login");
 		};
-		logger.debug("getScriptInputs"+ rolePrefix);
+		logger.debug("findScripts"+ param);
 		try {
 			List<ScriptMaster> scriptList;
-			if(rolePrefix.equals("")) {
-				scriptList = scriptMasterRepository.findByAccess(rolePrefix);
+			if(param.equals("")) {
+				scriptList = (List<ScriptMaster>) scriptMasterRepository.findAll();
+				//scriptList = scriptMasterRepository.findByAccess(param);
 				logger.info(">>>>>>>>>>>>>>>>>find scritps by access : " + scriptList.size());
 			}else {
-				scriptList = (List<ScriptMaster>) scriptMasterRepository.findAll();
+				param = "%"+param+"%"; 
+				//scriptList = (List<ScriptMaster>) scriptMasterRepository.findAll();
+				scriptList = (List<ScriptMaster>) scriptMasterRepository.findByScriptNameContainingOrScriptDescContainingOrLocationContainingOrPrefixContaining(
+						param,param,param,param);
 				logger.info(">>>>>>>>>>>>>>>>>find all scritps : " + scriptList.size());
 			}
 			// for audit purpose
@@ -105,8 +109,6 @@ public class ManageScriptController {
 		return null;
 	}
 
-
-	
 	@GetMapping(value = "/report")
 	public List<AuditScripts> getReport(@RequestParam(name = "scriptid", required = false) String ScriptId, @RequestParam(name = "executedby", required = false) String executedBy, 
 			                          @RequestParam(name = "executedon", required = false) String executedOn, @RequestParam(name = "groupid", required = false) String groupId,
@@ -232,7 +234,7 @@ public class ManageScriptController {
 		try {
 			String[] values = updatedvalue.split("::@@::");
 
-			logger.debug("getEntity :>>>>>>>>>>>>>>>>>> 1:" + values[0] + ", 2:" + values[1] + ", 3:" + values[2]
+			logger.info("get parameters:>>>>>>>>>>>>>>>>>> 1:" + values[0] + ", 2:" + values[1] + ", 3:" + values[2]
 					+ ", 4:" + values[4] + ", 5:" + values[5]);
 
 			ScriptMaster scriptMaster = new ScriptMaster();
@@ -261,7 +263,7 @@ public class ManageScriptController {
 		logger.info("AddNewScript :" + inputs);
 		try {
 			String[] values = inputs.split("::@@::");
-			logger.debug("get request contents :>>>>>>>>>>>>>>>>>> 1:"+values[1] + ", 2:"+ values[2] +", 3:"+values[3]+", 4:"+values[4]);	
+			logger.info("get request contents :>>>>>>>>>>>>>>>>>> 1:"+values[1] + ", 2:"+ values[2] +", 3:"+values[3]+", 4:"+values[4]);	
 			ScriptInputs input = new ScriptInputs();
 			input.setScriptId(new Long(values[1]));
 			input.setScriptName(values[2]);
@@ -312,7 +314,7 @@ public class ManageScriptController {
 		try {
 			logger.info("DeleteInput :" + input);
 			String[] values = input.split("::@@::");
-			logger.debug("getEntity :>>>>>>>>>>>>>>>>>> 1:" + values[1] + ", 2:" + values[2] + ", 3:" + values[3]);
+			logger.debug("get parameters :>>>>>>>>>>>>>>>>>> 1:" + values[1] + ", 2:" + values[2] + ", 3:" + values[3]);
 			scriptInputsRepository.deleteByScriptNameAndScriptIdAndInputName(values[2], new Long(values[1]), values[3]);
 			Response response = new Response("Done", "Deleted");
 			return response;

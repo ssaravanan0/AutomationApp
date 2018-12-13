@@ -2,7 +2,6 @@ C:\automationapp\autoapp\autoapp\AutomationApp\autoapp\src\main\java\com\waitros
 C:\automationapp\autoapp\autoapp\AutomationApp\autoapp\src\main\java\com\waitrose\app\config\SessionListener.java
 C:\automationapp\autoapp\autoapp\AutomationApp\autoapp\src\main\java\com\waitrose\app\entity\UserRole.java
 C:\automationapp\autoapp\autoapp\AutomationApp\autoapp\src\main\java\com\waitrose\app\service\AppServiceImpl.java
-C:\automationapp\autoapp\autoapp\AutomationApp\autoapp\src\main\java\com\waitrose\app\controller\RestWebController.java
 C:\automationapp\autoapp\autoapp\AutomationApp\autoapp\src\main\java\com\waitrose\app\config\ApplicationSessionConfiguration.java
 C:\automationapp\autoapp\autoapp\AutomationApp\autoapp\src\main\java\com\waitrose\app\config\UserService.java
 C:\automationapp\autoapp\autoapp\AutomationApp\autoapp\src\main\java\com\waitrose\app\dao\UserRoleRepository.java
@@ -19,6 +18,7 @@ C:\automationapp\autoapp\autoapp\AutomationApp\autoapp\src\main\java\com\waitros
 C:\automationapp\autoapp\autoapp\AutomationApp\autoapp\src\main\java\com\waitrose\app\dao\AppRoleDAO.java
 C:\automationapp\autoapp\autoapp\AutomationApp\autoapp\src\main\java\com\waitrose\app\dao\ScriptMasterRepository.java
 C:\automationapp\autoapp\autoapp\AutomationApp\autoapp\src\main\java\com\waitrose\app\config\DBConfiguration.java
+C:\automationapp\autoapp\autoapp\AutomationApp\autoapp\src\main\java\com\waitrose\app\controller\ManageScriptController.java
 C:\automationapp\autoapp\autoapp\AutomationApp\autoapp\src\main\java\com\waitrose\app\entity\ScriptMaster.java
 C:\automationapp\autoapp\autoapp\AutomationApp\autoapp\src\main\java\com\waitrose\app\dao\AppRoleRepository.java
 C:\automationapp\autoapp\autoapp\AutomationApp\autoapp\src\main\java\com\waitrose\app\entity\AuditScripts.java
