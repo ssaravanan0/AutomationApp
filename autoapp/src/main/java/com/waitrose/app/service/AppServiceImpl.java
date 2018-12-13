@@ -1,6 +1,9 @@
 package com.waitrose.app.service;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -124,7 +127,7 @@ public class AppServiceImpl implements UserDetailsService {
 		}
 		if(executedOn != null) {
 			logger.debug("executedOn:"+executedOn); 
-			filter.setExecutedOn(executedOn);
+			//filter.setExecutedOn(executedOn);
 			isFilter = true;
 		}
 		if(groupId!= null && !groupId.equals("")) {
@@ -145,7 +148,15 @@ public class AppServiceImpl implements UserDetailsService {
 			Specification<AuditScripts> spec = new AuditScriptSpecification(filter);
 			result = auditScriptsRepository.findAll(spec);
 		}else {
+			//a week report
+			Calendar cal = new GregorianCalendar();
+			cal.add(Calendar.DAY_OF_MONTH, -7);
+			Date sevenDaysAgo = cal.getTime();
+			
+			Date now = new Date();
+			
 			result = (List<AuditScripts>) auditScriptsRepository.findAll();
+			result = auditScriptsRepository.findAllByExecutedOnBetween(sevenDaysAgo, now);
 		}
 		
 		return result; 

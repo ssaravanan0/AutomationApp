@@ -173,7 +173,7 @@ public class ManageScriptController {
 		auditScripts.setExecutedBy(SecurityContextHolder.getContext().getAuthentication().getName());
 		auditScripts.setScriptName(scriptName);
 		auditScripts.setExecutionTime(end);
-		auditScripts.setExecutedOn(new Date()+"");
+		auditScripts.setExecutedOn(new Date());
 		auditScripts.setStatus(status);
 		
 		//auditScripts.setExecutedOn(DateFormat.getInstance().format(new Date()));	

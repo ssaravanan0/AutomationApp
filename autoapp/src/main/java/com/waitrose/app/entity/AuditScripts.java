@@ -42,7 +42,7 @@ public class AuditScripts {
     @Temporal(TemporalType.TIMESTAMP)*/
     
 	@Column(name = "EXECUTION_DATE", nullable = false)
-    private String executedOn;
+    private Date executedOn;
     
     @Column(name = "EXECUTION_IN_SECS", length = 50, nullable = false)
     private long executionTime;
@@ -84,11 +84,21 @@ public class AuditScripts {
 		this.scriptName = scriptName;
 	} 
 
-	public String getExecutedOn() {
+	
+
+	public Long getAuditId() {
+		return auditId;
+	}
+
+	public void setAuditId(Long auditId) {
+		this.auditId = auditId;
+	}
+
+	public Date getExecutedOn() {
 		return executedOn;
 	}
 
-	public void setExecutedOn(String executedOn) {
+	public void setExecutedOn(Date executedOn) {
 		this.executedOn = executedOn;
 	}
 
