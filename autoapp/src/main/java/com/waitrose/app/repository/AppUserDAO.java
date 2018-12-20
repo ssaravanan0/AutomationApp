@@ -1,4 +1,6 @@
-package com.waitrose.app.dao;
+package com.waitrose.app.repository;
+
+import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
@@ -11,6 +13,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.waitrose.app.entity.AppUser;
+import com.waitrose.app.entity.UserRole;
 
 /**
  * 
@@ -65,6 +68,15 @@ public class AppUserDAO {
         	e.printStackTrace();
         }
     	
+    }
+    
+    public List<String> getRoleNames(Long userId) {
+        String sql = "Select ur.appRole.roleName from " + UserRole.class.getName() + " ur " //
+                + " where ur.appUser.userId = :userId ";
+ 
+        Query query = this.entityManager.createQuery(sql, String.class);
+        query.setParameter("userId", userId);
+        return query.getResultList();
     }
  
 }

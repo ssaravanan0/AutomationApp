@@ -27,16 +27,8 @@ $( document ).ready(function() {
 		$('#postResultDiv').hide();
 		$('#postResultDiv1').hide();
 		$('#auditResultDiv').show(); 
-		
+		$('#footer').hide();
 		if (!requestRunning) { // don't do anything if already data loaded
-			
-			/*reload report
-			 table = $('#auditTable').DataTable( {
-			    paging: false
-			} );
-			 
-			table.destroy(); */ 
-	         
 			var table = $('#auditTable').DataTable({
 				"sAjaxSource": "/api/report" ,
 				"sAjaxDataProp": "",
@@ -54,7 +46,6 @@ $( document ).ready(function() {
 	 $("#auditTable").show();
 	 requestRunning = true;
 	});
-
 	
 	$(".manageScripts").click(function(event) {
 		$('#addRemoveInputsDiv').hide();
@@ -144,7 +135,7 @@ $( document ).ready(function() {
 		$('#postResultDiv1').hide();
 		$('#reportsDiv').hide();
 		$("#auditResultDiv").hide();
-		$("#userTbl").hide();
+		//$("#userTbl").hide();
 		
 		IsRoleRequested = false;
 		if(!IsRoleRequested){
@@ -284,9 +275,7 @@ $( document ).ready(function() {
 					    			+'<a href="#" class="saveuser" style="display: none;" > Save </a><a href="#" class="canceluser" style="display: none;"> Cancel </a></td></tr>');
 					    		}// 
 					    	});	
-						}
-					//////////////////////
-					 			 
+						} 			 
  				}else if(result.status == "Session expired"){
 					location.reload();
 				} 
@@ -330,8 +319,6 @@ $( document ).ready(function() {
     					col3 = $(this).val();
     				}
 				});
-				
-				
 		        updatedvalue = updatedvalue + saparator + col2 + saparator + col3 ;
 				//alert("after changing:"+ updatedvalue);
 			}
@@ -371,10 +358,8 @@ $( document ).ready(function() {
 	$(document).on("click", ".saveuser", function(){
 		 //alert("saveuser"+ $('#1').text());
 		 $(".add-new-user").removeAttr("disabled");
-		 
 		    var empty = false;
-			var input = $(this).parents("tr").find('input[type="text"]', 'option:selected');
-			
+			var input = $(this).parents("tr").find('input[type="text"]', 'option:selected');	
 			input.each(function(){
 				if(!$(this).val()){
 					$(this).addClass("error")
@@ -412,8 +397,7 @@ $( document ).ready(function() {
 			{
 			 //alert("both are same");
 			}else {
-			  //alert("both are different .. update it in db");
-				
+			  //alert("both are different .. update it in db");				
 				$(".add-new-user").removeAttr("disabled");
 				//alert(">>" + newscriptcontent)
 				$.ajax({
@@ -530,7 +514,6 @@ $( document ).ready(function() {
 		        var col4=$('#enabled').find(":selected").val(); // get current row 4th TD 
 		        //alert("true? :: "+ col4);
 		        var postContent = saparator +col2+saparator +col3+saparator +col4; 
-				
 				$(".add-new-user").removeAttr("disabled");
 				$.ajax({
 					type : "POST",
@@ -567,7 +550,7 @@ $( document ).ready(function() {
 			var row = '<tr>' +
 	            '<td class="filterable-cell"></td>' +
 	            '<td class="filterable-cell"><input type="text" class="form-control" name="name" id="name"></td>' +
-	            '<td class="filterable-cell">'+addRolesForAddNewUser()+'</td>'+
+	            '<td class="filterable-cell">'+addRolesForAddNewUserDropdown()+'</td>'+
 	            '<td class="filterable-cell"><select id="enabled"> <option value="1" >true</option><option value="0" >false</option></select></td>'+
 	            '<td class="filterable-cell"><a href="#" class="addNewUser"> Save </a><a href="#" class="cancelAddNewUser"> Cancel </a></td>' +
 	            '</tr>';
@@ -577,7 +560,7 @@ $( document ).ready(function() {
 			$("table table-inputs tbody tr").eq(index + 1).find(".add, .edit").toggle();
 	});
 	
-	function addRolesForAddNewUser(){
+	function addRolesForAddNewUserDropdown(){
 		var content ='<select class="role">';
 		$.each(roleList, function(i){	
 				content = content + '<option value="'+roleList[i].roleId+'" >'+roleList[i].roleName+'</option>';
@@ -691,9 +674,6 @@ $( document ).ready(function() {
 				    	 currentValue = currentValue + saparator + $(this).text();
 				    	 selectedDropdownRole = $(this).html();
 					    	$(this).html(addRolesInDropDown($(this).html()));
-					    	/*$(".updaterole option").val(function(idx, val) {
-								 $(this).siblings('[value="'+ val +'"]').remove();
-							});*/ 
 					    	var map = {};
 							$('.updaterole option').each(function () {
 							    if (map[this.value]) {
@@ -730,13 +710,8 @@ $( document ).ready(function() {
     				}
     	});
     	
-    	
-    	//$(".updatescript").hide();
     	$(this).parents("tr").find(".saveuser").hide();
     	$(this).parents("tr").find(".canceluser").hide();
-    	 
-    	
-
 	});
 	
 	$(document).on("click", ".removeuser", function(){ 
@@ -768,12 +743,7 @@ $( document ).ready(function() {
 				})
 		});
 	
-	
-
-	//add new
-	//var actions = $("table td:last-child").html();
-	// Append table with add row form on add new button click
-    $(".add-new").click(function(){
+  $(".add-new").click(function(){
 		//alert("add new script");
     	$(this).attr("disabled", "disabled");
 		var index = $("table tbody tr:last-child").index();
@@ -894,9 +864,6 @@ $( document ).ready(function() {
 			});
 		}	
     });
-	
-	
-	
 		
 //remove new
 $(document).on("click", ".removenewscript", function(){
@@ -928,13 +895,12 @@ $(document).on("click", ".removenewscript", function(){
 	});
 //remove link
 $(document).on("click", ".removescript", function(){
-//$(".removescript").click(function(event) {
 		event.preventDefault();
 		var removeScriptId = $(this).attr('id');	 
 		 $(this).parents("tr").remove();
 		 $(".add-new").removeAttr("disabled");
 		 $.ajax({
-				type : "POST",
+				type : "DELETE",
 				contentType : "application/json",
 				url : "/api/delete",
 				data : removeScriptId,
@@ -1017,26 +983,18 @@ $(document).on("click", ".editscript", function(){
 	currentValue = saparator + $(this).attr('id');
 	$(this).parents("tr").find('td').each(
 		function (i) {
-			
 			//alert($(this).text())
 			     if(i != 6 && i != 7){
 			    	 currentValue = currentValue + saparator + $(this).text();
-			    	 
 			         //currentValue = currentValue + ","+ $(this).text();
 			    	 if(i == 5){
 				    	 //currentValue = currentValue + saparator + $(this).text();
 				    	 selectedDropdownRole = $(this).text();
 					    	$(this).html(addRolesWithPrefixInDropDown($(this).text()));
-					    	/*$(".updaterole option").val(function(idx, val) {
-								 $(this).siblings('[value="'+ val +'"]').remove();
-							});*/ 
-					     	
 							$(".updaterole").val(selectedDropdownRole);
-							
 				     }
 			    	 if(i != 0 && i != 5)
 				          $(this).html('<input type="text" class="form-control" value="' + $(this).text() + '">');
-			     
 			     }
     });
 	//alert("before change :"+ currentValue)
@@ -1099,7 +1057,7 @@ $(document).on("click", ".updatescript", function(){
 				//alert("both are different .. update it in db");
 				//alert(">>"+updatedvalue);
 		    	$.ajax({
-					type : "POST",
+					type : "PUT",
 					contentType : "application/json",
 					url : "/api/save",
 					data : updatedvalue,

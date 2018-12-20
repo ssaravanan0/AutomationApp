@@ -1,5 +1,7 @@
 package com.waitrose.app.entity;
 
+import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -38,7 +40,7 @@ public class AppUser {
     private boolean enabled;
 
     @Column(name = "last_used", nullable = false)
-    private String lastUsed;
+    private Date lastUsed;
     
     @Column(table = "User_Role")
     private Long role_id;
@@ -75,12 +77,11 @@ public class AppUser {
         this.enabled = enabled;
     }
 
-	public String getLastUsed() {
+	public Date getLastUsed() {
 		return lastUsed;
 	}
 
-
-	public void setLastUsed(String lastUsed) {
+	public void setLastUsed(Date lastUsed) {
 		this.lastUsed = lastUsed;
 	}
 

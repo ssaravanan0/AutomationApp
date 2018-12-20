@@ -18,18 +18,17 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import com.waitrose.app.dao.AppRoleDAO;
-import com.waitrose.app.dao.AppUserDAO;
-import com.waitrose.app.dao.AuditScriptsRepository;
-import com.waitrose.app.dao.ScriptInputsRepository;
-import com.waitrose.app.dao.ScriptMasterDao;
-import com.waitrose.app.dao.ScriptMasterRepository;
-import com.waitrose.app.dao.UserRoleRepository;
 import com.waitrose.app.entity.AppUser;
 import com.waitrose.app.entity.AuditScripts;
 import com.waitrose.app.entity.ScriptInputs;
 import com.waitrose.app.entity.ScriptMaster;
 import com.waitrose.app.entity.UserRole;
+import com.waitrose.app.repository.AppUserDAO;
+import com.waitrose.app.repository.AppUserRepository;
+import com.waitrose.app.repository.AuditScriptsRepository;
+import com.waitrose.app.repository.ScriptInputsRepository;
+import com.waitrose.app.repository.ScriptMasterRepository;
+import com.waitrose.app.repository.UserRoleRepository;
 
 
 /**
@@ -43,37 +42,41 @@ public class AppServiceImpl implements UserDetailsService {
 	private static final Logger logger = LoggerFactory.getLogger(AppServiceImpl.class);
 
 	public String loggedInSession;
-
+	
 	@Autowired
 	private AppUserDAO appUserDAO;
-
-	@Autowired
-	private AppRoleDAO appRoleDAO;
-
-	@Autowired
-	private ScriptMasterDao scriptMasterDao;
 
 	@Autowired
 	private AuditScriptsRepository auditScriptsRepository;
 	
 	@Autowired
 	private UserRoleRepository userRolerRepository;
+	
+	@Autowired
+	private AppUserRepository appUserRepository;
+
+	
+	@Autowired
+	private ScriptMasterRepository scriptMasterRepository;
+	
+	@Autowired
+	private ScriptInputsRepository scriptInputsRepository;
 
 	@Override
 	public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
 		logger.debug("Username >> " + userName);
 		// todo call the service
-		AppUser appUser = this.appUserDAO.findUserAccount(userName.toUpperCase());
+		AppUser appUser = appUserRepository.findByUserNameInIgnoreCase(userName.toUpperCase()); //this.appUserDAO.findUserAccount(userName.toUpperCase());
 
 		if (appUser == null) {
 			logger.debug("User not found! " + userName);
 			throw new UsernameNotFoundException("User " + userName + " was not found in the database");
 		}
-
+ 
 		logger.debug("Found User: " + appUser);
 
 		// [ROLE_USER, ROLE_ADMIN,..]
-		List<String> roleNames = this.appRoleDAO.getRoleNames(appUser.getUserId());
+		List<String> roleNames = this.appUserDAO.getRoleNames(appUser.getUserId());
 
 		List<GrantedAuthority> grantList = new ArrayList<GrantedAuthority>();
 		if (roleNames != null) {
@@ -96,20 +99,13 @@ public class AppServiceImpl implements UserDetailsService {
 		return users;
 	}
 
-	public void updateLastUsed(String date, String userName) {
-		appUserDAO.updateLastUsed(date, userName);
+	public void updateLastUsed(Date d, String userName) {
+		appUserRepository.UpdateLastUsed(d, userName);
+		//appUserDAO.updateLastUsed(date, userName);
 	}
 
 	public AppUser findUserAccount(String userName) {
-		return appUserDAO.findUserAccount(userName);
-	}
-
-	public List<ScriptMaster> getScripts(String access) {
-		return scriptMasterDao.getScripts(access);
-	}
-
-	public List<ScriptInputs> getScriptInputs(Long name) {
-		return scriptMasterDao.getScriptInputs(name);
+		return appUserRepository.findByUserName(userName);
 	}
 
 	public List<AuditScripts> getReport(String ScriptId, String executedBy, String executedOn, String groupId, String status) {

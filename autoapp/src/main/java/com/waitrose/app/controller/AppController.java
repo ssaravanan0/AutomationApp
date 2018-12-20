@@ -1,7 +1,6 @@
 package com.waitrose.app.controller;
 
 import java.security.Principal;
-import java.text.DateFormat;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -20,6 +19,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import com.waitrose.app.entity.AppUser;
 import com.waitrose.app.entity.ScriptMaster;
 import com.waitrose.app.service.AppServiceImpl;
+import com.waitrose.app.service.ManageScriptServiceImpl;
 import com.waitrose.app.service.ManageUserServiceImpl;
 import com.waitrose.app.utils.WebUtils;
 
@@ -38,6 +38,9 @@ public class AppController {
 	
 	@Autowired
     private ManageUserServiceImpl manageUserServiceImpl;
+	
+	@Autowired
+    private ManageScriptServiceImpl manageScriptServiceImpl;
 	
 	public boolean isValidSession() {
     	return false;
@@ -60,10 +63,10 @@ public class AppController {
 			if (appUser != null & appUser.isEnabled()) {
 				List<ScriptMaster> list;
 				if (userInfo.contains("ADMIN")) {
-					list = appServiceImpl.getScripts("");
+					list = manageScriptServiceImpl.getScripts("");
 				}
 				else {
-					list = appServiceImpl.getScripts(WebUtils.getRolePrefix(loginedUser));
+					list = manageScriptServiceImpl.getScripts(WebUtils.getRolePrefix(loginedUser));
 				}
 				
 				Collections.reverse(list);
@@ -71,7 +74,7 @@ public class AppController {
 				logger.info("appUser active?"+ appUser.isEnabled());	
 				model.addAttribute("lastUsed", appUser.getLastUsed());
 				
-				appServiceImpl.updateLastUsed(DateFormat.getInstance().format(new Date()), userName);
+				appServiceImpl.updateLastUsed(new Date(), userName);
 				logger.debug("stored login time");
 				logger.debug("userInfo>>>>>>>>>>>>>>>>"+ userInfo);
 				if (userInfo.contains("ADMIN")) {

@@ -8,6 +8,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 /**
  * 
@@ -17,6 +18,16 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "SCRIPT_INPUTS")
 public class ScriptInputs {
+	
+	@Id
+	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="input_entry_seq")
+	@SequenceGenerator(
+		name="input_entry_seq",
+		sequenceName="input_entry_seq",
+		allocationSize=20
+	)
+	@Column(name = "ID", nullable = false)
+    private Long id;
  
 	@Column(name = "SCRIPT_ID", nullable = false)
     private Long scriptId;
@@ -24,7 +35,6 @@ public class ScriptInputs {
     @Column(name = "SCRIPT_NAME", length = 60, nullable = true)
     private String scriptName;
     
-    @Id
     @Basic(optional = false)
     @Column(name = "INPUT_NAME", length = 60, nullable = true)
     private String inputName;
@@ -171,6 +181,14 @@ public class ScriptInputs {
 	 */
 	public void setModifiedBy(String modifiedBy) {
 		this.modifiedBy = modifiedBy;
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
 	}
  
 }

@@ -1,4 +1,4 @@
-package com.waitrose.app.dao;
+package com.waitrose.app.repository;
 
 import java.util.List;
 
