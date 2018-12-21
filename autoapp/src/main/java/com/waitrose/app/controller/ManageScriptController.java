@@ -92,7 +92,7 @@ public class ManageScriptController {
 		return null;
 	}
 
-	@GetMapping(value = "/report")
+	/*@GetMapping(value = "/report")
 	public List<AuditScripts> getReport(@RequestParam(name = "scriptid", required = false) String ScriptId, @RequestParam(name = "executedby", required = false) String executedBy, 
 			                          @RequestParam(name = "executedon", required = false) String executedOn, @RequestParam(name = "groupid", required = false) String groupId,
 			                          @RequestParam(name = "status", required = false) String status) 
@@ -110,7 +110,7 @@ public class ManageScriptController {
 			e.printStackTrace();
 		}
 		return null;
-	}
+	}*/
 
 	@PostMapping(value = "/execute")
 	public Response executeScript(@Valid @RequestBody String scriptName) {

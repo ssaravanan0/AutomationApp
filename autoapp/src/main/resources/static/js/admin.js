@@ -26,11 +26,13 @@ $( document ).ready(function() {
 		$('#addRemoveGroupsDiv').hide();
 		$('#postResultDiv').hide();
 		$('#postResultDiv1').hide();
-		$('#auditResultDiv').show(); 
+		$('#auditResultDiv').show();
+		$('#reportsDiv').show();
 		$('#footer').hide();
-		if (!requestRunning) { // don't do anything if already data loaded
+		if (!requestRunning) { 
+			// don't do anything if already data loaded
 			var table = $('#auditTable').DataTable({
-				"sAjaxSource": "/api/report" ,
+				"sAjaxSource": "/report/weeklyreport" ,
 				"sAjaxDataProp": "",
 				"order": [[ 0, "asc" ]],
 				"aoColumns": [
@@ -44,6 +46,8 @@ $( document ).ready(function() {
 	      })
 		}
 	 $("#auditTable").show();
+	 $('#reportsDiv').show();
+	 
 	 requestRunning = true;
 	});
 	
@@ -58,6 +62,7 @@ $( document ).ready(function() {
 		getRoles();
 		getScripts("");
 		$("#manageScriptDiv").show();
+		$('#footer').show();
 		
 	});
 	
@@ -69,7 +74,8 @@ $( document ).ready(function() {
 		$('#postResultDiv').hide();
 		$('#postResultDiv1').hide();
 		$('#reportsDiv').hide();
-		$("#auditResultDiv").hide(); 
+		$("#auditResultDiv").hide();
+		$('#footer').show();
 	});
 		 
 	$(".manageGroup").click(function(event) {
@@ -79,9 +85,8 @@ $( document ).ready(function() {
 		$('#scriptlistDiv').hide();	 
 		$('#postResultDiv').hide();
 		$('#auditResultDiv').hide();
+		$('#footer').show();
 		getRoles();
-		
-		
 	});
 	
 	$(document).on("click", ".cancelAddNewGroup", function(){
@@ -135,7 +140,7 @@ $( document ).ready(function() {
 		$('#postResultDiv1').hide();
 		$('#reportsDiv').hide();
 		$("#auditResultDiv").hide();
-		//$("#userTbl").hide();
+		$('#footer').show();
 		
 		IsRoleRequested = false;
 		if(!IsRoleRequested){

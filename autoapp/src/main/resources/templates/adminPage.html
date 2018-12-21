@@ -6,7 +6,6 @@
 <!-- <meta name="viewport" content="width=device-width, initial-scale=1"> -->
 <link rel="stylesheet" href="/css/4.1.3/bootstrap.min.css">
 <script src="/js/3.1.1/jquery.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
 <link rel="stylesheet" href="/css/1.10.12/jquery.dataTables.min.css">
 <script src="/js/1.10.12/jquery.dataTables.min.js"></script>
 	
@@ -18,8 +17,6 @@
 <link rel="stylesheet" type="text/css" href="/css/dropdown.css">
 </head>
 <body style="font-family:calibri;font-size: 0.9rem;">
-
- 
 <div id='divHeader'>
 	<div id='divHeaderIcon'>
 		<img src='img/waitrose.jpg' id='imgHeaderLogo' />
@@ -107,15 +104,6 @@
 </div>
 
 <div id = "addRemoveInputsDiv" style="display: none;" >
- 
-<!-- todo  <div class="dropdown" >
-				
-				<div  th:if="${scriptList != null}" id="myDropdown" class="dropdown-content">
-					<input type="text" placeholder="Search.." id="myInput" >
-						<a th:each="item :${scriptList}" th:href="${item.scriptId}" th:text="${item.scriptName}">
-				</div>
-</div>
- -->
  
  <div class="container-fluid" th:if="${scriptList != null}" >
         <div class="row" style="padding-top:12px;">
@@ -210,36 +198,26 @@
 	</table>
 </div>
 
-<!-- <div id = "reportsDiv" class="container" style="display: none;">
-<div th:if="${scriptList != null}" id = "selectedReportDiv" class="container-fluid row top-fields" style="z-index: 0;">
-			  
-    		 <div class="top-fields">
-    		 	<div class="input-field col-md-3">
-                   <select th:id="byScriptName" class="form-control">
-				<option>Please select the script ...</option>
-				<option th:each="item :${scriptList}" th:value="${item.scriptId}"
-					th:text="${item.scriptName}"></option>
-			   </select>
-                </div>
+ <div id = "reportsDiv" class="container" style="display: none;">
+ 			  
+    <!-- 		    <div th:if="${scriptList != null}" id = "selectedReportDiv" class="row" style="z-index: 0;">		  
+    		   
                 <div class="input-field col-md-3">
-                    <input type="text" id="Status" name="username" placeholder="1. Name?" >
-                </div>
+                    <button type="button" class="btn btn-info weeklyreport">
+					<i class="fa fa-plus"></i> Weekly Report
+					</button>
+                </div> 
                 <div class="input-field col-md-3">
-                    <input type="text" id="phone" name="phone" placeholder="2. Phone Number?" >
-                </div>
-                <div class="input-field col-md-3">
-                    <input type="text" placeholder="3. Email ID?" id="email" name="email" >
-                </div>
-                <div class="input-field col-md-3">
-                    <button type="button" class="btn btn-info auditSearch">
-					<i class="fa fa-plus"></i> Search
+                    <button type="button" class="btn btn-info monthlyreport">
+					<i class="fa fa-plus"></i> Monthly Report
 					</button>
                 </div>
                 
-            </div>
-            </div>
+         
+        </div> -->
+         
 </div>			
- --> 
+  
 			
 <div id = "auditResultDiv" style="display: none;padding-top:12px;">
  
@@ -257,24 +235,6 @@
             </tr>
         </thead>
  </table>   
- <!-- 
-	 <table class="table table-striped report-header-fixed" id = "auditTbl" >
-    	<thead >
-    	<tr>
-    		<th>#</th>
-      	    <th>Script id</th>
-        	<th>Script name</th>
-        	<th>Executed on</th>
-        	<th>Executed in ms</th>
-        	<th>Status</th>
-        	<th>Executed by</th>
-        	<th>Group Id</th>
-    	</tr>
-    	</thead>
-    <tbody>
-    </tbody>    
-	</table>
---> 
 </div>
 <div id = "loggedInUsersDiv" class="container" style="display: none;">
 </div>
